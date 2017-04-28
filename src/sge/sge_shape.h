@@ -182,8 +182,8 @@ public:
 	//Draws the surface
 	virtual void draw(void);
 	
-	virtual inline void clear(Uint32 color);
-	virtual inline void clear(SDL_Surface *src, Sint16 srcX, Sint16 srcY);
+	virtual void clear(Uint32 color);
+	virtual void clear(SDL_Surface *src, Sint16 srcX, Sint16 srcY);
 	//virtual inline void clear(SDL_Surface *src){clear(src,last_pos.x,last_pos.y);}
 	
 	virtual void UpdateRects(void);
@@ -253,7 +253,7 @@ public:
 	
 	//Updates the internal status
 	//Returns true if the sprite moved
-	virtual inline bool update(void);
+	virtual bool update(void);
 	
 	//Sets the speed
 	void set_vel(Sint16 x, Sint16 y){xvel=x;yvel=y;}

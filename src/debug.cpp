@@ -1,42 +1,39 @@
-#ifdef _WIN32
-#include "windows.h"
-#endif
-
-#include <stdio.h>
-#include <stdarg.h>
-
-#include "filehandling.h"
+#include "FileHandling.h"
 
 #ifdef KITSCHY_DEBUG_MEMORY
 #include "debug_memorymanager.h"
 #endif
 
-FILE *fp = 0;
+#ifdef _WIN32
+#include <Windows.h>
+#endif
 
-void output_debug_message(const char *fmt, ...)
+#include <cstdarg>
+#include <cstdio>
+
+FILE* fp = nullptr;
+
+void output_debug_message(const char* fmt, ...)
 {
     char text[256];
     va_list ap;
 
     if (fmt == 0)
-        return ;
+        return;
 
     va_start(ap, fmt);
     vsprintf(text, fmt, ap);
     va_end(ap);
 
-    if (fp == 0)
-		fp = f1open("roadfighter.dbg", "w", USERDATA);
+    if (fp == nullptr)
+        fp = f1open("roadfighter.dbg", "w", USERDATA);
 
-    fprintf(fp, text);
+    fprintf(fp, "%s", text);
     fflush(fp);
-} /* glprintf */
+}
 
-
-
-
-void close_debug_messages(void)
+void close_debug_messages()
 {
     fclose(fp);
-    fp = 0;
-} /* close_debug_messages */
+    fp = nullptr;
+}

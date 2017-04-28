@@ -1,10 +1,6 @@
-#ifndef _F1SPIRIT_DEBUG
-#define _F1SPIRIT_DEBUG
+#pragma once
 
 #define F1SPIRIT_DEBUG_MESSAGES
 
-void output_debug_message(const char *fmt, ...);
-void close_debug_messages(void);
-
-
-#endif
+void output_debug_message(const char* fmt, ...);
+void close_debug_messages();

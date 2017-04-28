@@ -14,30 +14,48 @@ ICON = roadfighter.png
 DESKTOP = roadfighter.desktop
 
 OBJS = \
-	$(SRC)/sge/sge_blib.o			$(SRC)/sge/sge_bm_text.o			\
-	$(SRC)/sge/sge_collision.o		$(SRC)/sge/sge_misc.o				\
-	$(SRC)/sge/sge_primitives.o		$(SRC)/sge/sge_rotation.o			\
-	$(SRC)/sge/sge_shape.o			$(SRC)/sge/sge_surface.o			\
-	$(SRC)/sge/sge_textpp.o			$(SRC)/sge/sge_tt_text.o			\
-	$(SRC)/CCarObject.o				$(SRC)/CEnemyCarObject.o			\
-	$(SRC)/CEnemyFastCarObject.o	$(SRC)/CEnemyNormalCarObject.o		\
-	$(SRC)/CEnemyRacerCarObject.o	$(SRC)/CEnemySlidderCarObject.o		\
-	$(SRC)/CEnemyTruckObject.o		$(SRC)/CExplosionObject.o			\
-	$(SRC)/CFuelObject.o			$(SRC)/CGame.o						\
-	$(SRC)/CObject.o				$(SRC)/CPlayerCarObject.o			\
-	$(SRC)/CRoadFighter.o			$(SRC)/CSemaphoreObject.o			\
-	$(SRC)/CTile.o														\
-	$(SRC)/auxiliar.o				$(SRC)/configuration.o				\
-	$(SRC)/debug.o					$(SRC)/filehandling.o				\
-	$(SRC)/gameover_state.o			$(SRC)/interlevel_state.o			\
-	$(SRC)/konami_state.o			$(SRC)/loadmg2.o					\
-	$(SRC)/menu_state.o				$(SRC)/playing_state.o				\
-	$(SRC)/presentation_state.o		$(SRC)/quick_tables.o				\
-	$(SRC)/sound.o														\
-	$(SRC)/main.o
+	   $(SRC)/sge/sge_blib.o                  \
+	   $(SRC)/sge/sge_bm_text.o               \
+	   $(SRC)/sge/sge_collision.o             \
+	   $(SRC)/sge/sge_misc.o                  \
+	   $(SRC)/sge/sge_primitives.o            \
+	   $(SRC)/sge/sge_rotation.o              \
+	   $(SRC)/sge/sge_shape.o                 \
+	   $(SRC)/sge/sge_surface.o               \
+	   $(SRC)/sge/sge_textpp.o                \
+	   $(SRC)/sge/sge_tt_text.o               \
+	   $(SRC)/Objects/CarObject.o             \
+	   $(SRC)/Objects/EnemyCarObject.o        \
+	   $(SRC)/Objects/EnemyFastCarObject.o    \
+	   $(SRC)/Objects/EnemyNormalCarObject.o  \
+	   $(SRC)/Objects/EnemyRacerCarObject.o   \
+	   $(SRC)/Objects/EnemySlidderCarObject.o \
+	   $(SRC)/Objects/EnemyTruckObject.o      \
+	   $(SRC)/Objects/ExplosionObject.o       \
+	   $(SRC)/Objects/FuelObject.o            \
+	   $(SRC)/Game.o                          \
+	   $(SRC)/Objects/Object.o                \
+	   $(SRC)/Objects/PlayerCarObject.o       \
+	   $(SRC)/RoadFighter.o                   \
+	   $(SRC)/Objects/SemaphoreObject.o       \
+	   $(SRC)/Tile.o                          \
+	   $(SRC)/Auxiliar.o                      \
+	   $(SRC)/Configuration.o                 \
+	   $(SRC)/Debug.o                         \
+	   $(SRC)/FileHandling.o                  \
+	   $(SRC)/States/GameoverState.o          \
+	   $(SRC)/States/InterlevelState.o        \
+	   $(SRC)/States/KonamiState.o            \
+	   $(SRC)/LoadMG2.o                       \
+	   $(SRC)/States/MenuState.o              \
+	   $(SRC)/States/PlayingState.o           \
+	   $(SRC)/States/PresentationState.o      \
+	   $(SRC)/QuickTables.o                   \
+	   $(SRC)/Sound.o                         \
+	   $(SRC)/main.o
 
 CC = g++
-CFLAGS = -g3 -O3 `sdl-config --cflags` -I/usr/X11R6/include
+CFLAGS = -std=c++11 -g3 -O0 `sdl-config --cflags` -I/usr/X11R6/include
 LDFLAGS = `sdl-config --libs` -L/usr/X11R6/lib/ -lSDL_image -lSDL_mixer -lSDL_sound -lSDL_ttf
 RM = rm -f
 CP = cp -r
@@ -53,7 +71,7 @@ all: $(EXE)
 
 $(EXE): $(OBJS)
 	$(CC) $(LDFLAGS) $^ -o $@
-	@$(STRIP) $@
+	# @$(STRIP) $@
 	@$(ECHO) " o If there are no errors, the game compiled succesfully"
 
 clean:

@@ -1,7 +1,6 @@
-#include <stdlib.h>
+#include <cstdlib>
 
-#ifndef GENERIC_LIST
-#define GENERIC_LIST
+#pragma once
 
 /* 
 Funciones para LISTAS: 
@@ -44,405 +43,575 @@ Funciones para LISTAS:
 
 	bool operator==(List<T> &l)
 	T *operator[](int index)
-*/ 
+*/
 
-template <class T> class LLink {
+template <class T>
+class LLink final
+{
 public:
-	LLink<T>(T *o,LLink<T> *n=0) {
-		obj=o;next=n;
-	};
-	~LLink<T>() {delete obj;
-				 if (next!=0) delete next;};
-	inline LLink<T> *Getnext() {return next;};
-	inline void Setnext(LLink<T> *n) {next=n;};
-	inline T *GetObj() {return obj;};
-	inline void SetObj(T *o) {obj=o;};
+    LLink(T* o, LLink<T>* n = 0)
+    {
+        obj = o;
+        next = n;
+    }
 
-	void Anade(T *o) {
-		if (next==0) {
-			LLink<T> *node=new LLink<T>(o);
-			next=node;
-		} else {
-			next->Anade(o);	
-		}
-		};
+    ~LLink()
+    {
+        delete obj;
+        if (next != 0)
+            delete next;
+    }
+
+    inline LLink<T>* Getnext()
+    {
+        return next;
+    }
+
+    inline void Setnext(LLink<T>* n)
+    {
+        next = n;
+    }
+
+    inline T* GetObj()
+    {
+        return obj;
+    }
+
+    inline void SetObj(T* o)
+    {
+        obj = o;
+    }
+
+    void Anade(T* o)
+    {
+        if (next == 0)
+        {
+            LLink<T>* node = new LLink<T>(o);
+            next = node;
+        }
+        else
+        {
+            next->Anade(o);
+        }
+    }
 
 private:
-	T *obj;
-	LLink<T> *next;
+    T* obj;
+    LLink<T>* next;
 };
 
-template <class T> class List {
+template <class T>
+class List final
+{
 public:
-	List<T>() {list=0;act=0;top=0;original=true;};
-	~List<T>() {
-		if (original) {
-			T *o;
-			while(!EmptyP()) {
-				o=ExtractIni();
-				delete o;
-			} /* while */ 
-			delete list;
-		} /* if */ 
-	};
-	List<T>(List<T> &l) {list=l.list;act=list;top=l.top;original=false;};
+    List()
+    {
+        list = 0;
+        act = 0;
+        top = 0;
+        original = true;
+    }
 
-	void Delete() {
-		if (original) {
-			T *o;
-			while(!EmptyP()) {
-				o=ExtractIni();
-				delete o;
-			} /* while */ 
-			delete list;
-		} /* if */ 
-		list=0;
-		act=0;
-		top=0;
-	};
+    List(List<T>& l)
+    {
+        list = l.list;
+        act = list;
+        top = l.top;
+        original = false;
+    }
 
-	void Instance(List<T> &l) {list=l.list;act=list;top=l.top;original=false;};
-	void Rewind(void) {act=list;};
-	void Forward(void) {act=top;};
-	void Next(void) {
-		if (act!=0) act=act->Getnext();
-	};
+    ~List()
+    {
+        if (original)
+        {
+            T* o;
+            while (!EmptyP())
+            {
+                o = ExtractIni();
+                delete o;
+            }
+            delete list;
+        }
+    }
 
-	void Prev(void) {
-		LLink<T> *tmp;
+    void Delete()
+    {
+        if (original)
+        {
+            T* o;
+            while (!EmptyP())
+            {
+                o = ExtractIni();
+                delete o;
+            }
+            delete list;
+        }
+        list = 0;
+        act = 0;
+        top = 0;
+    }
 
-		if (act!=list) {
-			tmp=list;
-			while(tmp->Getnext()!=act) tmp=tmp->Getnext();
-			act=tmp;
-		} /* if */ 
-	};
+    void Instance(const List<T>& l)
+    {
+        list = l.list;
+        act = list;
+        top = l.top;
+        original = false;
+    }
 
-	T *GetObj(void) {return act->GetObj();};
-	void SetObj(T *o) {act->SetObj(o);};
+    void Rewind()
+    {
+        act = list;
+    }
 
-	LLink<T> *GetPos(void) {return act;};
-	bool EmptyP() {return list==0;};
-	bool EndP() {return act==0;};
-	bool LastP() {return act==top;};
-	bool BeginP() {return act==list;};
+    void Forward()
+    {
+        act = top;
+    }
 
-	void Insert(T *o) {
-		if (list==0) {
-			list=new LLink<T>(o);
-			top=list;
-		} else {
-			list=new LLink<T>(o,list);
-		} /* if */ 
-	};
+    void Next()
+    {
+        if (act != nullptr)
+            act = act->Getnext();
+    }
 
-	void Add(T *o) {
-		if (list==0) {
-			list=new LLink<T>(o);
-			top=list;
-		} else {
-			top->Anade(o);
-			top=top->Getnext();
-		} /* if */ 
-	};
+    void Prev()
+    {
+        LLink<T>* tmp;
 
-	void AddAfter(LLink<T> *pos,T *o)
-	{
-		if (pos==0) {
-			if (list==0) {
-				list=new LLink<T>(o);
-				top=list;
-			} else {
-				list=new LLink<T>(o,list);
-			} /* if */ 
-		} else {
-			LLink<T> *nl=new LLink<T>(o);
-		
-			nl->Setnext(pos->Getnext());
-			pos->Setnext(nl);
-			if (nl->Getnext()==0) top=nl;
-		} /* if */ 
-	} /* AddAfter */ 
+        if (act != list)
+        {
+            tmp = list;
+            while (tmp->Getnext() != act)
+                tmp = tmp->Getnext();
+            act = tmp;
+        }
+    }
 
-	void AddBefore(LLink<T> *pos,T *o)
-	{
-		if (pos==list) {
-			if (list==0) {
-				list=new LLink<T>(o);
-				top=list;
-			} else {
-				list=new LLink<T>(o,list);
-			} /* if */ 
-		} else {
-			LLink<T> *l,*nl=new LLink<T>(o);
+    T* GetObj()
+    {
+        return act->GetObj();
+    }
 
-			l=list;
-			while(l->Getnext()!=pos) l=l->Getnext();
-			l->Setnext(nl);
-			nl->Setnext(pos);
-		
-			if (pos==0) top=nl;
-		} /* if */ 
-	} /* AddBefore */ 
+    void SetObj(T* o)
+    {
+        act->SetObj(o);
+    }
 
-	T *operator[](int index) {
-		LLink<T> *tmp=list;
-		while(tmp!=0 && index>0) {
-			tmp=tmp->Getnext();
-			index--;
-		} /* while */ 
-		if (tmp==0) throw;
-		return tmp->GetObj();
-	};
+    LLink<T>* GetPos()
+    {
+        return act;
+    }
 
-	bool Iterate(T *&o) {
-		if (EndP()) return false;
-		o=act->GetObj();
-		act=act->Getnext();
-		return true;
-	} /* Iterate */ 
+    bool EmptyP()
+    {
+        return list == 0;
+    }
 
-	T *ExtractIni(void) {
-		LLink<T> *tmp;
-		T *o;
+    bool EndP()
+    {
+        return act == 0;
+    }
 
-		if (list==0) return 0;
-		o=list->GetObj();
-		tmp=list;
-		list=list->Getnext();
-		tmp->Setnext(0);
-		if (act==tmp) act=list;
-		if (top==act) top=0;
-		tmp->SetObj(0);
-		delete tmp;
-		return o;
-	} /* ExtractIni */ 
+    bool LastP()
+    {
+        return act == top;
+    }
 
-	T *Extract(void) {
-		LLink<T> *tmp,*tmp2=0;
-		T *o;
+    bool BeginP()
+    {
+        return act == list;
+    }
 
-		if (list==0) return 0;
-		tmp=list;
-		while(tmp->Getnext()!=0) {
-			tmp2=tmp;
-			tmp=tmp->Getnext();
-		} /* while */ 
-		o=tmp->GetObj();
-		if (tmp2==0) {
-			list=0;
-			top=0;
-			act=0;
-		} else {
-			tmp2->Setnext(0);
-			top=tmp2;
-		} /* if */ 
+    void Insert(T* o)
+    {
+        if (list == 0)
+        {
+            list = new LLink<T>(o);
+            top = list;
+        }
+        else
+        {
+            list = new LLink<T>(o, list);
+        }
+    }
 
-		if (act==tmp) act=top;
-		tmp->SetObj(0);
-		delete tmp;
-		return o;
-	} /* Extract */ 
+    void Add(T* o)
+    {
+        if (list == 0)
+        {
+            list = new LLink<T>(o);
+            top = list;
+        }
+        else
+        {
+            top->Anade(o);
+            top = top->Getnext();
+        }
+    }
 
-	bool MemberP(T *o) {
-		LLink<T> *tmp;
-		tmp=list;
-		while(tmp!=0) {
-			if (*(tmp->GetObj())==*o) return true;
-			tmp=tmp->Getnext();
-		} /* while */ 
-		return false;
-	} /* MemberP */ 
+    void AddAfter(LLink<T>* pos, T* o)
+    {
+        if (pos == 0)
+        {
+            if (list == 0)
+            {
+                list = new LLink<T>(o);
+                top = list;
+            }
+            else
+            {
+                list = new LLink<T>(o, list);
+            }
+        }
+        else
+        {
+            LLink<T>* nl = new LLink<T>(o);
 
-	T *MemberGet(T *o) {
-		LLink<T> *tmp;
-		tmp=list;
-		while(tmp!=0) {
-			if (*(tmp->GetObj())==*o) return tmp->GetObj();
-			tmp=tmp->Getnext();
-		} /* while */ 
-		return 0;
-	} /* MemberGet */ 
-	
-	bool MemberRefP(T *o) {
-		LLink<T> *tmp;
-		tmp=list;
-		while(tmp!=0) {
-			if (tmp->GetObj()==o) return true;
-			tmp=tmp->Getnext();
-		} /* while */ 
-		return false;
-	} /* MemberRefP */ 
+            nl->Setnext(pos->Getnext());
+            pos->Setnext(nl);
+            if (nl->Getnext() == 0)
+                top = nl;
+        }
+    }
 
-	int Length() {
-		LLink<T> *tmp;
-		int count=0;
+    void AddBefore(LLink<T>* pos, T* o)
+    {
+        if (pos == list)
+        {
+            if (list == 0)
+            {
+                list = new LLink<T>(o);
+                top = list;
+            }
+            else
+            {
+                list = new LLink<T>(o, list);
+            }
+        }
+        else
+        {
+            LLink<T>*l, *nl = new LLink<T>(o);
 
-		tmp=list;
-		while(tmp!=0) {
-			tmp=tmp->Getnext();
-			count++;
-		} /* while */ 
-		return count;
-	};
+            l = list;
+            while (l->Getnext() != pos)
+                l = l->Getnext();
+            l->Setnext(nl);
+            nl->Setnext(pos);
 
-	void Copy(List l) {
-		List<T> ltmp;
-		T *o;
-		Delete();
-		original=true;
+            if (pos == 0)
+                top = nl;
+        }
+    }
 
-		ltmp.Instance(l);
-		ltmp.Rewind();
-		while(ltmp.Iterate(o)) {
-			o=new T(*o);
-			Add(o);
-		} /* while */ 
-		Synchronize(&l);
-	} /* Copy */ 
+    T* operator[](int index)
+    {
+        LLink<T>* tmp = list;
+        while (tmp != 0 && index > 0)
+        {
+            tmp = tmp->Getnext();
+            index--;
+        } /* while */
+        if (tmp == 0)
+            throw;
+        return tmp->GetObj();
+    };
 
+    bool Iterate(T*& o)
+    {
+        if (EndP())
+            return false;
+        o = act->GetObj();
+        act = act->Getnext();
+        return true;
+    }
 
-	void Synchronize(List *l)
-	{
-		LLink<T> *ll;
+    T* ExtractIni()
+    {
+        LLink<T>* tmp;
+        T* o;
 
-		ll=l->list;
-		act=list;
-		while(ll!=0 && ll!=l->act) {
-			ll=ll->Getnext();
-			if (act!=0) act=act->Getnext();
-		} /* while */ 
-	} /* Synchronize */ 
+        if (list == 0)
+            return 0;
+        o = list->GetObj();
+        tmp = list;
+        list = list->Getnext();
+        tmp->Setnext(0);
+        if (act == tmp)
+            act = list;
+        if (top == act)
+            top = 0;
+        tmp->SetObj(0);
+        delete tmp;
+        return o;
+    }
 
+    T* Extract()
+    {
+        LLink<T>*tmp, *tmp2 = 0;
+        T* o;
 
-	void Append(List l) {
-		T *o;
+        if (list == 0)
+            return 0;
+        tmp = list;
+        while (tmp->Getnext() != 0)
+        {
+            tmp2 = tmp;
+            tmp = tmp->Getnext();
+        }
+        o = tmp->GetObj();
+        if (tmp2 == 0)
+        {
+            list = 0;
+            top = 0;
+            act = 0;
+        }
+        else
+        {
+            tmp2->Setnext(0);
+            top = tmp2;
+        }
 
-		l.Rewind();
-		while(l.Iterate(o)) {
-			o=new T(*o);
-			Add(o);
-		} /* while */ 
-	} /* Append */ 
+        if (act == tmp)
+            act = top;
+        tmp->SetObj(0);
+        delete tmp;
+        return o;
+    }
 
+    bool MemberP(T* o)
+    {
+        LLink<T>* tmp;
+        tmp = list;
+        while (tmp != 0)
+        {
+            if (*(tmp->GetObj()) == *o)
+                return true;
+            tmp = tmp->Getnext();
+        }
+        return false;
+    }
 
-	bool DeleteElement(T *o)
-	{
-		LLink<T> *tmp1,*tmp2;
+    T* MemberGet(T* o)
+    {
+        LLink<T>* tmp;
+        tmp = list;
+        while (tmp != 0)
+        {
+            if (*(tmp->GetObj()) == *o)
+                return tmp->GetObj();
+            tmp = tmp->Getnext();
+        }
+        return 0;
+    }
 
-		tmp1=list;
-		tmp2=0;
-		while(tmp1!=0 && tmp1->GetObj()!=o) {
-			tmp2=tmp1;
-			tmp1=tmp1->Getnext();
-		} /* while */ 
+    bool MemberRefP(T* o)
+    {
+        LLink<T>* tmp;
+        tmp = list;
+        while (tmp != 0)
+        {
+            if (tmp->GetObj() == o)
+                return true;
+            tmp = tmp->Getnext();
+        }
+        return false;
+    }
 
-		if (tmp1!=0) {
-			if (tmp2==0) {
-				/* Eliminar el primer elemento de la lista: */ 
-				list=list->Getnext();
-				tmp1->Setnext(0);
-				if (act==tmp1) act=list;
-				tmp1->SetObj(0);
-				delete tmp1;
-			} else {
-				/* Eliminar un elemento intermedio: */ 
-				tmp2->Setnext(tmp1->Getnext());
-				if (act==tmp1) act=tmp1->Getnext();
-				if (top==tmp1) top=tmp2;
-				tmp1->Setnext(0);
-				tmp1->SetObj(0);
-				delete tmp1;
-			} /* if */ 
-			return true;
-		} else {
-			return false;
-		} /* if */ 
+    int Length()
+    {
+        LLink<T>* tmp;
+        int count = 0;
 
-	} /* DeleteElement */ 
+        tmp = list;
+        while (tmp != 0)
+        {
+            tmp = tmp->Getnext();
+            count++;
+        }
+        return count;
+    }
 
-	T *GetRandom(void) {
-		int i,l=Length();
-		i=((rand()*l)/RAND_MAX);
-		if (i==l) i=l-1;
+    void Copy(List l)
+    {
+        List<T> ltmp;
+        T* o;
+        Delete();
+        original = true;
 
-		return operator[](i);
-	} /* GetRandom */ 
+        ltmp.Instance(l);
+        ltmp.Rewind();
+        while (ltmp.Iterate(o))
+        {
+            o = new T(*o);
+            Add(o);
+        } /* while */
+        Synchronize(&l);
+    }
 
-	bool operator==(List<T> &l) {
-		LLink<T> *tmp1,*tmp2;
+    void Synchronize(List* l)
+    {
+        LLink<T>* ll;
 
-		tmp1=list;
-		tmp2=l.list;
-		while(tmp1!=0 && tmp2!=0) {
-			if (!((*(tmp1->GetObj()))==(*(tmp2->GetObj())))) return false;
-			tmp1=tmp1->Getnext();
-			tmp2=tmp2->Getnext();
-		} /* while */ 
-		return tmp1==tmp2;
-	} /* == */ 
+        ll = l->list;
+        act = list;
+        while (ll != 0 && ll != l->act)
+        {
+            ll = ll->Getnext();
+            if (act != 0)
+                act = act->Getnext();
+        }
+    }
 
+    void Append(List l)
+    {
+        T* o;
 
-	int SearchObjRef(T *o)
-	{
-		LLink<T> *tmp;
-		int pos=0;
+        l.Rewind();
+        while (l.Iterate(o))
+        {
+            o = new T(*o);
+            Add(o);
+        }
+    }
 
-		tmp=list;
-		while(tmp!=0) {
-			if ((tmp->GetObj())==o) return pos;
-			tmp=tmp->Getnext();
-			pos++;
-		} /* while */ 
-		return -1;
-	} /* SearchObj */ 
+    bool DeleteElement(T* o)
+    {
+        LLink<T>*tmp1, *tmp2;
 
-	int SearchObj(T *o)
-	{
-		LLink<T> *tmp;
-		int pos=0;
+        tmp1 = list;
+        tmp2 = 0;
+        while (tmp1 != 0 && tmp1->GetObj() != o)
+        {
+            tmp2 = tmp1;
+            tmp1 = tmp1->Getnext();
+        }
 
-		tmp=list;
-		while(tmp!=0) {
-			if (*(tmp->GetObj())==*o) return pos;
-			tmp=tmp->Getnext();
-			pos++;
-		} /* while */ 
-		return -1;
-	} /* SearchObj */ 
+        if (tmp1 != 0)
+        {
+            if (tmp2 == 0)
+            {
+                /* Eliminar el primer elemento de la lista: */
+                list = list->Getnext();
+                tmp1->Setnext(0);
+                if (act == tmp1)
+                    act = list;
+                tmp1->SetObj(0);
+                delete tmp1;
+            }
+            else
+            {
+                /* Eliminar un elemento intermedio: */
+                tmp2->Setnext(tmp1->Getnext());
+                if (act == tmp1)
+                    act = tmp1->Getnext();
+                if (top == tmp1)
+                    top = tmp2;
+                tmp1->Setnext(0);
+                tmp1->SetObj(0);
+                delete tmp1;
+            }
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
+    T* GetRandom()
+    {
+        int i, l = Length();
+        i = ((rand() * l) / RAND_MAX);
+        if (i == l)
+            i = l - 1;
 
-	void Sort(bool (*p)(T *o1,T *o2))
-	{
-		LLink<T> *l1,*l2;
-		T* tmp;
+        return operator[](i);
+    }
 
-		l1=0;
-		l2=list;
-		while(l2!=0) {
-			if (l1!=0 && l2!=0) {
-				if (!(*p)(l1->GetObj(),l2->GetObj())) {
-					tmp=l1->GetObj();
-					l1->SetObj(l2->GetObj());
-					l2->SetObj(tmp);
-				} /* if */ 
-			} /* if */ 
-			l1=l2;
-			l2=l2->Getnext();
-		} /* while */ 
-	} /* Sort */ 
+    bool operator==(List<T>& l)
+    {
+        LLink<T>*tmp1, *tmp2;
 
+        tmp1 = list;
+        tmp2 = l.list;
+        while (tmp1 != 0 && tmp2 != 0)
+        {
+            if (!((*(tmp1->GetObj())) == (*(tmp2->GetObj()))))
+                return false;
+            tmp1 = tmp1->Getnext();
+            tmp2 = tmp2->Getnext();
+        }
+        return tmp1 == tmp2;
+    }
 
-	void SetNoOriginal(void) {original=false;}
-	void SetOriginal(void) {original=true;}
+    int SearchObjRef(T* o)
+    {
+        LLink<T>* tmp;
+        int pos = 0;
+
+        tmp = list;
+        while (tmp != 0)
+        {
+            if ((tmp->GetObj()) == o)
+                return pos;
+            tmp = tmp->Getnext();
+            pos++;
+        }
+        return -1;
+    }
+
+    int SearchObj(T* o)
+    {
+        LLink<T>* tmp;
+        int pos = 0;
+
+        tmp = list;
+        while (tmp != 0)
+        {
+            if (*(tmp->GetObj()) == *o)
+                return pos;
+            tmp = tmp->Getnext();
+            pos++;
+        }
+        return -1;
+    }
+
+    void Sort(bool (*p)(T* o1, T* o2))
+    {
+        LLink<T>*l1, *l2;
+        T* tmp;
+
+        l1 = 0;
+        l2 = list;
+        while (l2 != 0)
+        {
+            if (l1 != 0 && l2 != 0)
+            {
+                if (!(*p)(l1->GetObj(), l2->GetObj()))
+                {
+                    tmp = l1->GetObj();
+                    l1->SetObj(l2->GetObj());
+                    l2->SetObj(tmp);
+                }
+            }
+            l1 = l2;
+            l2 = l2->Getnext();
+        }
+    }
+
+    void SetNoOriginal()
+    {
+        original = false;
+    }
+    void SetOriginal()
+    {
+        original = true;
+    }
 
 private:
-	bool original;
-	LLink<T> *list,*top;
-	LLink<T> *act;
+    bool original;
+    LLink<T>* list;
+    LLink<T>* top;
+    LLink<T>* act;
 };
-
-
-
-#endif
-
