@@ -1,5 +1,5 @@
 #include "EnemyRacerCarObject.h"
-#include "../Game.h"
+#include "Game.h"
 
 CEnemyRacerCarObject::CEnemyRacerCarObject(int nx, int ny, CTile* t, int start_delay, CGame* g)
     : CEnemyCarObject(nx, ny, t, start_delay, g)

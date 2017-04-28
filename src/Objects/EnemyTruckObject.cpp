@@ -1,5 +1,5 @@
 #include "EnemyTruckObject.h"
-#include "../Game.h"
+#include "Game.h"
 
 extern int ENEMY_SPEED;
 extern int ENEMY_HSPEED;

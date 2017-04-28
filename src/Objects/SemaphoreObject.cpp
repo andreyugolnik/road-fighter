@@ -1,6 +1,6 @@
 #include "SemaphoreObject.h"
-#include "../Game.h"
-#include "../Sound.h"
+#include "Game.h"
+#include "Sound.h"
 
 CSemaphoreObject::CSemaphoreObject(int nx, int ny, CTile* t1, CTile* t2, CTile* t3, CTile* t4, CTile* t5, CGame* g)
     : CObject()
@@ -28,7 +28,7 @@ CSemaphoreObject::~CSemaphoreObject(void)
 {
 }
 
-bool CSemaphoreObject::cycle(unsigned char* keyboard, unsigned char* old_keyboard)
+bool CSemaphoreObject::cycle(unsigned char* /*keyboard*/, unsigned char* /*old_keyboard*/)
 {
     timmer++;
 

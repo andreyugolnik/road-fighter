@@ -1,5 +1,5 @@
 #include "Object.h"
-#include "../Tile.h"
+#include "Tile.h"
 
 #include <SDL/SDL_mixer.h>
 #include <SDL/SDL_ttf.h>

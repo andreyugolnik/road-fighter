@@ -1,6 +1,6 @@
-#include "../Auxiliar.h"
-#include "../RoadFighter.h"
-#include "../sge/sge.h"
+#include "Auxiliar.h"
+#include "RoadFighter.h"
+#include "sge/sge.h"
 
 #include <cmath>
 

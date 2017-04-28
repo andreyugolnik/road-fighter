@@ -1,6 +1,6 @@
-#include "../FileHandling.h"
-#include "../RoadFighter.h"
-#include "../Game.h"
+#include "FileHandling.h"
+#include "RoadFighter.h"
+#include "Game.h"
 
 #include <ctime>
 

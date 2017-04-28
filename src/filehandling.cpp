@@ -1,5 +1,9 @@
 #include "FileHandling.h"
 
+#include <cstdlib>
+#include <cstring>
+#include <sys/stat.h>
+
 #ifndef _WIN32
 // make (sub)directories including multiple subdirs
 int mkdirp(const char* fqfn, mode_t mode)

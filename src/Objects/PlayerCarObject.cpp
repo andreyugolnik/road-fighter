@@ -1,6 +1,6 @@
 #include "PlayerCarObject.h"
-#include "../Game.h"
 #include "ExplosionObject.h"
+#include "Game.h"
 
 #include <cmath>
 

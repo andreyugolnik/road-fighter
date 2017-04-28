@@ -1,7 +1,7 @@
 #include "EnemyCarObject.h"
+#include "Auxiliar.h"
 #include "ExplosionObject.h"
-#include "../Auxiliar.h"
-#include "../Game.h"
+#include "Game.h"
 
 #ifdef _WIN32
 #include <windows.h>

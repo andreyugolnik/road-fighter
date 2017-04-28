@@ -8,9 +8,9 @@
 #define CONSTITUTION_WATER 32
 #define CONSTITUTION_OIL 64
 
-#include <SDL/SDL.h>
+#include "List.h"
 
-#include "../List.h"
+#include <SDL/SDL.h>
 
 class CTile;
 

@@ -1,9 +1,6 @@
 #pragma once
 
 #include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <sys/stat.h>
 #include <sys/types.h>
 
 #define STRLEN 512

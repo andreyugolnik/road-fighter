@@ -1,5 +1,5 @@
 #include "EnemyFastCarObject.h"
-#include "../Game.h"
+#include "Game.h"
 
 int FENEMY_SPEED = (24 << 8);
 int FENEMY_HSPEED = 32 * 24;

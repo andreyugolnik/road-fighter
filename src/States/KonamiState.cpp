@@ -1,5 +1,5 @@
-#include "../Auxiliar.h"
-#include "../RoadFighter.h"
+#include "Auxiliar.h"
+#include "RoadFighter.h"
 
 const int konami_fade_time = 25;
 

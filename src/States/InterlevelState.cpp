@@ -1,8 +1,8 @@
-#include "../Auxiliar.h"
-#include "../Debug.h"
-#include "../Game.h"
-#include "../List.h"
-#include "../RoadFighter.h"
+#include "Auxiliar.h"
+#include "Debug.h"
+#include "Game.h"
+#include "List.h"
+#include "RoadFighter.h"
 
 #include <SDL/SDL_image.h>
 

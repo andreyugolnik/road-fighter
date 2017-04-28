@@ -1,5 +1,5 @@
-#include "../Auxiliar.h"
-#include "../RoadFighter.h"
+#include "Auxiliar.h"
+#include "RoadFighter.h"
 
 const int presentation_fade_time = 25;
 

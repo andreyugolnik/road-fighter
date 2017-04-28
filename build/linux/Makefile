@@ -55,7 +55,7 @@ OBJS = \
 	   $(SRC)/main.o
 
 CC = g++
-CFLAGS = -std=c++11 -g3 -O0 `sdl-config --cflags` -I/usr/X11R6/include
+CFLAGS = -std=c++11 -O2 `sdl-config --cflags` -I/usr/X11R6/include -Isrc
 LDFLAGS = `sdl-config --libs` -L/usr/X11R6/lib/ -lSDL_image -lSDL_mixer -lSDL_sound -lSDL_ttf
 RM = rm -f
 CP = cp -r

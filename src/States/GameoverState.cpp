@@ -1,5 +1,5 @@
-#include "../Auxiliar.h"
-#include "../RoadFighter.h"
+#include "Auxiliar.h"
+#include "RoadFighter.h"
 
 int gameover_time = 25;
 

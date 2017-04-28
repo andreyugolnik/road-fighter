@@ -1,5 +1,5 @@
 #include "CarObject.h"
-#include "../Tile.h"
+#include "Tile.h"
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_mixer.h>
