@@ -11,23 +11,30 @@ ifeq ($(UNAME), Darwin)
 	BUNDLE_NAME=roadfighter.app
 endif
 
-all:    release
-
-help:
+all:
 	@echo "Usage:"
-	@echo "    make <release | debug>    - make release or debug application"
-	@echo "    make <clean>              - cleanup directory"
+	@echo "    make <linux>  - make linux release"
+	@echo "    make <macos>  - make macos release"
+	@echo "    make <clean>  - cleanup directory"
 
-release:
+release_build:
 	$(shell if [ ! -d $(BUILD_DIR_RELEASE) ]; then mkdir $(BUILD_DIR_RELEASE); fi)
 	cd $(BUILD_DIR_RELEASE) ; cmake -DCMAKE_BUILD_TYPE=Release -DAPP_VERSION_MAJOR:STRING=$(VER_MAJOR) -DAPP_VERSION_MINOR:STRING=$(VER_MINOR) -DAPP_VERSION_RELEASE:STRING=$(VER_RELEASE) .. ; make ; cd ..
 	cp -r $(BUILD_DIR_RELEASE)/$(BUNDLE_NAME) .
-	cp -r assets $(BUNDLE_NAME)/Contents/Resources/
 
-debug:
+debug_build:
 	$(shell if [ ! -d $(BUILD_DIR_DEBUG) ]; then mkdir $(BUILD_DIR_DEBUG); fi)
 	cd $(BUILD_DIR_DEBUG) ; cmake -DCMAKE_BUILD_TYPE=Debug -DAPP_VERSION_MAJOR:STRING=$(VER_MAJOR) -DAPP_VERSION_MINOR:STRING=$(VER_MINOR) -DAPP_VERSION_RELEASE:STRING=$(VER_RELEASE) .. ; make ; cd ..
 	cp -r $(BUILD_DIR_DEBUG)/$(BUNDLE_NAME) .
+
+linux: release_build
+
+linux_debug: debug_build
+
+macos: release_build
+	cp -r assets $(BUNDLE_NAME)/Contents/Resources/
+
+macos_debug: debug_build
 	cp -r assets $(BUNDLE_NAME)/Contents/Resources/
 
 emscripten:
