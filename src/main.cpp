@@ -1,6 +1,7 @@
-#include "RoadFighter.h"
-#include "Debug.h"
+#include "Assets.h"
 #include "Auxiliar.h"
+#include "Debug.h"
+#include "RoadFighter.h"
 
 // #ifdef _WIN32
 // #include <windows.h>
@@ -89,21 +90,21 @@ SDL_Surface* initializeSDL(int moreflags)
         if (fullscreen)
             output_debug_message(",fullscreen");
         output_debug_message("\n");
-    } /* if */
+    }
 
     TTF_Init();
 
     SDL_EnableUNICODE(1);
 
     return screen;
-} /* initializeSDL */
+}
 
 void finalizeSDL()
 {
     TTF_Quit();
     //	Sound_release();
     SDL_Quit();
-} /* finalizeSDL */
+}
 
 #ifdef _WIN32
 int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
@@ -116,7 +117,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
             start_level = tmp;
             if (start_level < 1 || start_level > 6)
                 start_level = 1;
-        } /* if */
+        }
     }
 
 #else
@@ -131,9 +132,11 @@ int main(int argc, char** argv)
             start_level = tmp;
             if (start_level < 1 || start_level > 6)
                 start_level = 1;
-        } /* if */
+        }
     }
 #endif
+
+    assets::initialize();
 
     int time, act_time;
     SDL_Event event;
@@ -212,10 +215,10 @@ FIXME: the code below is a big copy/paste; it should be in a separate function i
                         else
                         {
                             quit = true;
-                        } /* if */
+                        }
                         Resume_playback();
-                    } /* if */
-                }     /* if */
+                    }
+                }
 #endif
 
                 if (event.key.keysym.sym == SDLK_RETURN)
@@ -244,18 +247,18 @@ FIXME: the code below is a big copy/paste; it should be in a separate function i
                         else
                         {
                             quit = true;
-                        } /* if */
+                        }
                         Resume_playback();
-                    } /* if */
-                }     /* if */
+                    }
+                }
                 break;
 
             /* SDL_QUIT event (window close) */
             case SDL_QUIT:
                 quit = true;
                 break;
-            } /* switch */
-        }     /* while */
+            }
+        }
 
         act_time = GetTickCount();
         if (act_time - time >= REDRAWING_PERIOD)
@@ -272,7 +275,7 @@ FIXME: the code below is a big copy/paste; it should be in a separate function i
             SDL_SetClipRect(screen_sfc, 0);
             game->draw(screen_sfc);
             SDL_Flip(screen_sfc);
-        } /* if */
+        }
         SDL_Delay(1);
     }
 
@@ -280,5 +283,7 @@ FIXME: the code below is a big copy/paste; it should be in a separate function i
 
     finalizeSDL();
 
+    assets::deinitialize();
+
     return 0;
-} /* main */
+}

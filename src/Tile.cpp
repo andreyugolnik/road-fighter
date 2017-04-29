@@ -230,13 +230,13 @@ TILE_SOURCE::TILE_SOURCE()
     sfc = 0;
 }
 
-TILE_SOURCE::TILE_SOURCE(char* filename)
+TILE_SOURCE::TILE_SOURCE(const char* filename)
 {
     SDL_Surface* tmp_sfc;
 
     fname = new char[strlen(filename) + 1];
     strcpy(fname, filename);
-    tmp_sfc = IMG_Load(fname);
+    tmp_sfc = loadImage(fname);
 
     sfc = SDL_CreateRGBSurface(SDL_HWSURFACE, tmp_sfc->w, tmp_sfc->h, 32, 0, 0, 0, AMASK);
     SDL_SetAlpha(sfc, 0, SDL_ALPHA_OPAQUE);
@@ -261,16 +261,13 @@ bool TILE_SOURCE::save(FILE* fp)
 bool TILE_SOURCE::load(FILE* fp)
 {
     char tmp[256];
-    SDL_Surface* tmp_sfc;
-
     if (1 != fscanf(fp, "%s", tmp))
         return false;
 
-    if (fname != 0)
-        delete fname;
+    delete fname;
     fname = new char[strlen(tmp) + 1];
     strcpy(fname, tmp);
-    tmp_sfc = IMG_Load(fname);
+    SDL_Surface* tmp_sfc = loadImage(fname);
 
     sfc = SDL_CreateRGBSurface(SDL_HWSURFACE, tmp_sfc->w, tmp_sfc->h, 32, 0, 0, 0, AMASK);
     SDL_SetAlpha(sfc, 0, SDL_ALPHA_OPAQUE);
@@ -280,7 +277,7 @@ bool TILE_SOURCE::load(FILE* fp)
     return true;
 }
 
-bool TILE_SOURCE::cmp(char* n)
+bool TILE_SOURCE::cmp(const char* n)
 {
     if (strcmp(n, fname) == 0)
         return true;

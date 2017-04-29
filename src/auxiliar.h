@@ -2,14 +2,12 @@
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
+#include <SDL/SDL_mixer.h>
 
-#ifndef _WIN32
-
-#define min(a, b) ((a) < (b) ? (a) : (b))
-#define max(a, b) ((a) > (b) ? (a) : (b))
-
-#endif
-//#define abs(a) ((a)<0 ? (-(a)) : (a))
+SDL_Surface* loadImage(const char* path);
+Mix_Chunk* loadSound(const char* path);
+Mix_Music* loadMusic(const char* path);
+TTF_Font* loadFont(const char* path, int size);
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
 // PPC values:

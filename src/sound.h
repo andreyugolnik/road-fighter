@@ -8,8 +8,6 @@ bool Sound_initialization(void);
 int Sound_initialization(int nc, int nrc);
 void Sound_release(void);
 
-bool Sound_file_test(const char* f1);
-
 SOUNDT Sound_create_sound(const char* file);
 void Sound_delete_sound(SOUNDT s);
 int Sound_play(SOUNDT s);

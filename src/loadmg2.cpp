@@ -1,5 +1,6 @@
 #include "FileHandling.h"
 #include "Game.h"
+#include "Assets.h"
 #include "Objects/SemaphoreObject.h"
 
 bool CGame::load_map(const char* mapname)
@@ -14,7 +15,7 @@ bool CGame::load_map(const char* mapname)
     TILE_SOURCE* source;
     char tmp[256];
 
-    fp = f1open(mapname, "r", GAMEDATA);
+    fp = f1open(assets::makePath(mapname), "r", GAMEDATA);
     if (fp == 0)
         return false;
 

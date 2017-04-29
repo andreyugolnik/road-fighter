@@ -16,7 +16,7 @@ extern int MAX_FUEL;
 extern int SCREEN_X;
 extern int SCREEN_Y;
 
-CRoadFighter::CRoadFighter(void)
+CRoadFighter::CRoadFighter()
 {
     int i;
 
@@ -54,35 +54,35 @@ CRoadFighter::CRoadFighter(void)
     for (i = 0; i < SDLK_LAST; i++)
         old_keyboard[i] = 0;
 
-    font1 = TTF_OpenFont("fonts/comicbd.ttf", 16);
-    font2big = TTF_OpenFont("fonts/tanglewo.ttf", FONT_SIZE);
-    font2medium = TTF_OpenFont("fonts/tanglewo.ttf", int(FONT_SIZE * 0.8));
-    font2small = TTF_OpenFont("fonts/tanglewo.ttf", int(FONT_SIZE * 0.65));
+    font1 = loadFont("fonts/comicbd.ttf", 16);
+    font2big = loadFont("fonts/tanglewo.ttf", FONT_SIZE);
+    font2medium = loadFont("fonts/tanglewo.ttf", int(FONT_SIZE * 0.8));
+    font2small = loadFont("fonts/tanglewo.ttf", int(FONT_SIZE * 0.65));
 
-    disclaimer_sfc = IMG_Load("graphics/disclaimer.jpg");
-    retroremakes_sfc = IMG_Load("graphics/retroremakes.bmp");
-    konami1_sfc = IMG_Load("graphics/konami1.jpg");
-    konami2_sfc = IMG_Load("graphics/konami2.jpg");
-    tittle_sfc = IMG_Load("graphics/title.jpg");
-    arrow_sfc = IMG_Load("graphics/arrow.bmp");
+    disclaimer_sfc = loadImage("graphics/disclaimer.jpg");
+    retroremakes_sfc = loadImage("graphics/retroremakes.bmp");
+    konami1_sfc = loadImage("graphics/konami1.jpg");
+    konami2_sfc = loadImage("graphics/konami2.jpg");
+    tittle_sfc = loadImage("graphics/title.jpg");
+    arrow_sfc = loadImage("graphics/arrow.bmp");
     scoreboard_sfc = 0;
-    gamemap_sfc = IMG_Load("graphics/gamemap.bmp");
-    minicar1_sfc = IMG_Load("graphics/minicar1.bmp");
-    minicar2_sfc = IMG_Load("graphics/minicar2.bmp");
-    gameover_sfc = IMG_Load("graphics/gameover.jpg");
-    scoreboard_sfc = IMG_Load("graphics/scoreboard.bmp");
+    gamemap_sfc = loadImage("graphics/gamemap.bmp");
+    minicar1_sfc = loadImage("graphics/minicar1.bmp");
+    minicar2_sfc = loadImage("graphics/minicar2.bmp");
+    gameover_sfc = loadImage("graphics/gameover.jpg");
+    scoreboard_sfc = loadImage("graphics/scoreboard.bmp");
     scoreboard2_sfc = 0;
-    scoreboardleft_sfc = IMG_Load("graphics/scoreboard_left.bmp");
+    scoreboardleft_sfc = loadImage("graphics/scoreboard_left.bmp");
 
     {
         SDL_Color c;
         const char* text = "        "
                            "Game created for the RETROREMAKES REMAKE COMPETITION"
                            "        "
-                           "PROGRAMMING: Santi Ontaсуn (Brain)    "
+                           "PROGRAMMING: Santi Ontañón (Brain)    "
                            "GRAPHICS: Miikka Poikela (McBain)    "
                            "MUSIC/SFX: Jorrith Schaap (Jorito)    "
-                           "BETA TESTING: Jason Eames (JEames), Miikka Poikela (McBain), Jorrith Schaap (Jorito), Santi Ontaсуn (Brain)"
+                           "BETA TESTING: Jason Eames (JEames), Miikka Poikela (McBain), Jorrith Schaap (Jorito), Santi Ontañón (Brain)"
                            "        ";
         c.r = c.g = c.b = 128;
 

@@ -19,7 +19,6 @@
 *  Written with some help from Johan E. Thelin.
 */
 
-#include "SDL.h"
 #include "sge_surface.h"
 #include "sge_primitives.h"
 #include "sge_blib.h"

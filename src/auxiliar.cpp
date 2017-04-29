@@ -1,4 +1,5 @@
 #include "Auxiliar.h"
+#include "Assets.h"
 #include "List.h"
 
 #ifdef _WIN32
@@ -10,10 +11,31 @@
 #endif
 
 #include <SDL/SDL_image.h>
+#include <algorithm>
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <ctype.h>
+
+SDL_Surface* loadImage(const char* path)
+{
+    return IMG_Load(assets::makePath(path));
+}
+
+Mix_Music* loadMusic(const char* path)
+{
+    return Mix_LoadMUS(assets::makePath(path));
+}
+
+Mix_Chunk* loadSound(const char* path)
+{
+    return Mix_LoadWAV(assets::makePath(path));
+}
+
+TTF_Font* loadFont(const char* path, int size)
+{
+    return TTF_OpenFont(assets::makePath(path), size);
+}
 
 #ifndef _WIN32
 #ifndef HAVE_STRLWR
@@ -70,9 +92,9 @@ SDL_Surface* load_maskedimage(char* imagefile, char* maskfile, char* path)
     char name[256];
 
     sprintf(name, "%s%s", path, imagefile);
-    SDL_Surface* tmp = IMG_Load(name);
+    SDL_Surface* tmp = loadImage(name);
     sprintf(name, "%s%s", path, imagefile);
-    SDL_Surface* mask = IMG_Load(name);
+    SDL_Surface* mask = loadImage(name);
 
     if (tmp == nullptr || mask == nullptr)
         return nullptr;
@@ -187,7 +209,7 @@ void maximumpixel(SDL_Surface* surface, int x, int y, Uint32 pixel)
     g = p[GOFFSET];
     b = p[BOFFSET];
 
-    *(Uint32*)p = SDL_MapRGB(surface->format, max(r, r2), max(g, g2), max(b, b2));
+    *(Uint32*)p = SDL_MapRGB(surface->format, std::max(r, r2), std::max(g, g2), std::max(b, b2));
 }
 
 Uint32 getpixel(SDL_Surface* surface, int x, int y)

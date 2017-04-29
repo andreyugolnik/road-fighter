@@ -52,13 +52,13 @@ class TILE_SOURCE final
 
 public:
     TILE_SOURCE();
-    TILE_SOURCE(char* filename);
+    TILE_SOURCE(const char* filename);
     ~TILE_SOURCE();
 
     bool save(FILE* fp);
     bool load(FILE* fp);
 
-    bool cmp(char* n);
+    bool cmp(const char* n);
 
 private:
     SDL_Surface* sfc;

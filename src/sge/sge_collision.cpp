@@ -15,13 +15,13 @@
  *  version 2 of the License, or (at your option) any later version. *
  *********************************************************************/
 
-#include "SDL.h"
-#include <stdio.h>
-#include <string.h>
-#include <new>
 #include "sge_collision.h"
 #include "sge_surface.h"
 #include "sge_shape.h"
+
+#include <cstdio>
+#include <cstring>
+#include <new>
 
 using namespace std;
 

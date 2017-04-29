@@ -18,7 +18,8 @@
 #ifndef sge_primitives_H
 #define sge_primitives_H
 
-#include "SDL.h"
+#include <SDL/SDL.h>
+
 #include "sge_internal.h"
 
 

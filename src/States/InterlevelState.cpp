@@ -56,16 +56,16 @@ int CRoadFighter::interlevel_cycle(void)
         {
             SDL_FreeSurface(scoreboard2_sfc);
             if (n_players > 1)
-                scoreboard2_sfc = IMG_Load("graphics/s_board12p.bmp");
+                scoreboard2_sfc = loadImage("graphics/s_board12p.bmp");
             else
-                scoreboard2_sfc = IMG_Load("graphics/s_board11p.bmp");
+                scoreboard2_sfc = loadImage("graphics/s_board11p.bmp");
         }
         else
         {
             if (n_players > 1)
-                scoreboard2_sfc = IMG_Load("graphics/s_board22p.bmp");
+                scoreboard2_sfc = loadImage("graphics/s_board22p.bmp");
             else
-                scoreboard2_sfc = IMG_Load("graphics/s_board21p.bmp");
+                scoreboard2_sfc = loadImage("graphics/s_board21p.bmp");
         }
 
         desired_scoreboard_x = SCREEN_X - scoreboard_sfc->w;
@@ -75,21 +75,21 @@ int CRoadFighter::interlevel_cycle(void)
             desired_scoreboard_x = SCREEN_X - 144;
 
         if (current_level == 1)
-            levelintro_sfc = IMG_Load("graphics/stage1.jpg");
+            levelintro_sfc = loadImage("graphics/stage1.jpg");
         if (current_level == 2)
-            levelintro_sfc = IMG_Load("graphics/stage2.jpg");
+            levelintro_sfc = loadImage("graphics/stage2.jpg");
         ;
         if (current_level == 3)
-            levelintro_sfc = IMG_Load("graphics/stage3.jpg");
+            levelintro_sfc = loadImage("graphics/stage3.jpg");
         ;
         if (current_level == 4)
-            levelintro_sfc = IMG_Load("graphics/stage4.jpg");
+            levelintro_sfc = loadImage("graphics/stage4.jpg");
         ;
         if (current_level == 5)
-            levelintro_sfc = IMG_Load("graphics/stage5.jpg");
+            levelintro_sfc = loadImage("graphics/stage5.jpg");
         ;
         if (current_level == 6)
-            levelintro_sfc = IMG_Load("graphics/stage6.jpg");
+            levelintro_sfc = loadImage("graphics/stage6.jpg");
         ;
 
         /* Create the game: */

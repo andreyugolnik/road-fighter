@@ -1,4 +1,6 @@
 #include "Sound.h"
+#include "Assets.h"
+#include "Auxiliar.h"
 #include "Debug.h"
 #include "FileHandling.h"
 
@@ -16,14 +18,12 @@
 #define AUDIO_BUFFER 2048
 
 bool sound_enabled = false;
-Mix_Music* music_sound = 0;
+Mix_Music* music_sound = nullptr;
 int n_channels = -1;
 
-bool Sound_initialization(void)
+bool Sound_initialization()
 {
-    if (-1 == Sound_initialization(0, 0))
-        return false;
-    return true;
+    return -1 != Sound_initialization(0, 0);
 }
 
 int Sound_initialization(int nc, int nrc)
@@ -37,29 +37,22 @@ int Sound_initialization(int nc, int nrc)
     n_channels = 8;
 
     sound_enabled = true;
-#ifdef __DEBUG_MESSAGES
     output_debug_message("Initializing SDL_mixer.\n");
-#endif
     if (Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_bufsize))
     {
         sound_enabled = false;
-#ifdef __DEBUG_MESSAGES
         output_debug_message("Unable to open audio: %s\n", Mix_GetError());
         output_debug_message("Running the game without audio.\n");
-#endif
         return -1;
     }
 
     SDL_AudioDriverName(SoundcardName, sizeof(SoundcardName));
     Mix_QuerySpec(&audio_rate, &audio_format, &audio_channels);
-#ifdef __DEBUG_MESSAGES
     output_debug_message("    opened %s at %d Hz %d bit %s, %d bytes audio buffer\n",
                          SoundcardName, audio_rate, audio_format & 0xFF,
                          audio_channels > 1 ? "stereo" : "mono", audio_bufsize);
-#endif
 
     MIX_VERSION(&compile_version);
-#ifdef __DEBUG_MESSAGES
     output_debug_message("    compiled with SDL_mixer version: %d.%d.%d\n",
                          compile_version.major,
                          compile_version.minor,
@@ -68,7 +61,6 @@ int Sound_initialization(int nc, int nrc)
                          Mix_Linked_Version()->major,
                          Mix_Linked_Version()->minor,
                          Mix_Linked_Version()->patch);
-#endif
 
     if (nc > 0)
         n_channels = Mix_AllocateChannels(nc);
@@ -78,29 +70,29 @@ int Sound_initialization(int nc, int nrc)
     return n_channels;
 }
 
-void Sound_release(void)
+void Sound_release()
 {
     Sound_release_music();
     if (sound_enabled)
     {
-        //		Sound_Quit();
+        // Sound_Quit();
         Mix_CloseAudio();
     }
     sound_enabled = false;
 }
 
-void Stop_playback(void)
+void Stop_playback()
 {
     if (sound_enabled)
     {
         Sound_pause_music();
-        //		Mix_HookMusic(0, 0);
+        // Mix_HookMusic(0, 0);
         Mix_CloseAudio();
         sound_enabled = false;
     }
 }
 
-void Resume_playback(void)
+void Resume_playback()
 {
     Resume_playback(0, 0);
 }
@@ -116,29 +108,22 @@ int Resume_playback(int nc, int nrc)
     n_channels = 8;
 
     sound_enabled = true;
-#ifdef __DEBUG_MESSAGES
     output_debug_message("Initializing SDL_mixer.\n");
-#endif
     if (Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_bufsize))
     {
         sound_enabled = false;
-#ifdef __DEBUG_MESSAGES
         output_debug_message("Unable to open audio: %s\n", Mix_GetError());
         output_debug_message("Running the game without audio.\n");
-#endif
         return -1;
     }
 
     SDL_AudioDriverName(SoundcardName, sizeof(SoundcardName));
     Mix_QuerySpec(&audio_rate, &audio_format, &audio_channels);
-#ifdef __DEBUG_MESSAGES
     output_debug_message("    opened %s at %d Hz %d bit %s, %d bytes audio buffer\n",
                          SoundcardName, audio_rate, audio_format & 0xFF,
                          audio_channels > 1 ? "stereo" : "mono", audio_bufsize);
-#endif
 
     MIX_VERSION(&compile_version);
-#ifdef __DEBUG_MESSAGES
     output_debug_message("    compiled with SDL_mixer version: %d.%d.%d\n",
                          compile_version.major,
                          compile_version.minor,
@@ -147,7 +132,6 @@ int Resume_playback(int nc, int nrc)
                          Mix_Linked_Version()->major,
                          Mix_Linked_Version()->minor,
                          Mix_Linked_Version()->patch);
-#endif
 
     if (nc > 0)
         n_channels = Mix_AllocateChannels(nc);
@@ -159,54 +143,25 @@ int Resume_playback(int nc, int nrc)
     return n_channels;
 }
 
-/* a check to see if file is readable and greater than zero */
-int file_check(char* fname)
-{
-    FILE* fp;
-
-    if ((fp = f1open(fname, "r", GAMEDATA)) != NULL)
-    {
-        if (fseek(fp, 0L, SEEK_END) == 0 && ftell(fp) > 0)
-        {
-            fclose(fp);
-            return true;
-        }
-/* either the file could not be read (==-1) or size was zero (==0) */
-#ifdef __DEBUG_MESSAGES
-        output_debug_message("ERROR in file_check(): the file %s is corrupted.\n", fname);
-#endif
-        fclose(fp);
-        exit(1);
-    }
-    return false;
-}
-
 SOUNDT Sound_create_sound(const char* file)
 {
-    int n_ext = 6;
-    const char* ext[6] = { ".WAV", ".OGG", ".MP3", ".wav", ".ogg", ".mp3" };
+    const char* ext[] = { ".wav", ".ogg" };
     char name[256];
-    int i;
 
     if (sound_enabled)
     {
-        for (i = 0; i < n_ext; i++)
+        for (auto e : ext)
         {
-            strcpy(name, file);
-            strcat(name, ext[i]);
-            if (file_check(name))
-                return Mix_LoadWAV(name);
+            ::snprintf(name, sizeof(name), "%s%s", file, e);
+            auto sound = loadSound(name);
+            if (sound != nullptr)
+            {
+                return sound;
+            }
         }
+    }
 
-#ifdef __DEBUG_MESSAGES
-        output_debug_message("ERROR in Sound_create_sound(): Could not load sound file: %s.(wav|ogg|mp3)\n", file);
-#endif
-        exit(1);
-    }
-    else
-    {
-        return 0;
-    }
+    return nullptr;
 }
 
 void Sound_delete_sound(SOUNDT s)
@@ -227,9 +182,7 @@ int Sound_play(SOUNDT s, int volume)
     if (sound_enabled)
     {
         int channel = Mix_PlayChannel(-1, s, 0);
-        //#ifdef __DEBUG_MESSAGES
-        //		output_debug_message("SFX player on channel %i (volume = %i)\n",channel,volume);
-        //#endif
+        // output_debug_message("SFX player on channel %i (volume = %i)\n",channel,volume);
         Mix_Volume(channel, volume);
         return channel;
     }
@@ -277,72 +230,42 @@ void Sound_play_ch(SOUNDT s, int ch, int volume)
 
 Mix_Music* Sound_create_stream(const char* file)
 {
-    int n_ext = 6;
-    const char* ext[6] = { ".WAV", ".OGG", ".MP3", ".wav", ".ogg", ".mp3" };
+    const char* ext[] = { ".ogg", ".wav" };
     char name[256];
-    int i;
 
     if (sound_enabled)
     {
-        for (i = 0; i < n_ext; i++)
+        for (auto e : ext)
         {
-            strcpy(name, file);
-            strcat(name, ext[i]);
-            if (file_check(name))
-                return Mix_LoadMUS(name);
+            ::snprintf(name, sizeof(name), "%s%s", file, e);
+            auto music = loadMusic(name);
+            if (music != nullptr)
+            {
+                return music;
+            }
         }
 
-#ifdef __DEBUG_MESSAGES
-        output_debug_message("ERROR in Sound_create_stream(): Could not load sound file: %s.(wav|ogg|mp3)\n", file);
-#endif
-        exit(1);
+        output_debug_message("ERROR in Sound_create_stream(): Could not load sound file: %s.(wav|ogg)\n", file);
     }
-    else
-    {
-        return 0;
-    }
+
+    return nullptr;
 }
 
 void Sound_create_music(const char* f1, int loops)
 {
     if (sound_enabled)
     {
-        if (f1 != 0)
+        if (f1 != nullptr)
         {
             music_sound = Sound_create_stream(f1);
             Mix_PlayMusic(music_sound, loops);
         }
         else
         {
-            music_sound = 0;
+            music_sound = nullptr;
         }
 
         //		playing_music=true;
-    }
-}
-
-bool Sound_file_test(const char* f1)
-{
-    int n_ext = 6;
-    const char* ext[6] = { ".WAV", ".OGG", ".MP3", ".wav", ".ogg", ".mp3" };
-    char name[256];
-    int i;
-
-    if (sound_enabled)
-    {
-        for (i = 0; i < n_ext; i++)
-        {
-            strcpy(name, f1);
-            strcat(name, ext[i]);
-            if (file_check(name))
-                return true;
-        }
-
-        return false;
-    }
-    else
-    {
-        return false;
     }
 }
 
@@ -352,9 +275,11 @@ void Sound_release_music(void)
     {
         //		playing_music=false;
         Mix_HaltMusic();
-        if (music_sound != 0)
+        if (music_sound != nullptr)
+        {
             Mix_FreeMusic(music_sound);
-        music_sound = 0;
+            music_sound = nullptr;
+        }
     }
 }
 

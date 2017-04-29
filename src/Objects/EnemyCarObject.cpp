@@ -11,6 +11,8 @@
 #include <time.h>
 #endif
 
+#include <algorithm>
+
 extern int ENEMY_SPEED;
 extern int ENEMY_HSPEED;
 extern int PLAYING_WINDOW;
@@ -46,7 +48,7 @@ bool CEnemyCarObject::cycle(unsigned char* keyboard, unsigned char* old_keyboard
             slide_direction = 1;
         else
             slide_direction = -1;
-        slide_speed = min(last_collision->get_y_speed(), y_speed);
+        slide_speed = std::min(last_collision->get_y_speed(), y_speed);
         slide_timmer = 8;
 
         last_collision = 0;

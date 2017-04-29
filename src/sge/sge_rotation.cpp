@@ -15,12 +15,12 @@
  *  version 2 of the License, or (at your option) any later version. *
  *********************************************************************/
 
-#include "SDL.h"
-#include <stdio.h>
-#include <math.h>
 #include "sge_rotation.h"
 #include "sge_surface.h"
 #include "sge_blib.h"
+
+#include <cstdio>
+#include <cmath>
 
 #define SWAP(x,y,temp) temp=x;x=y;y=temp
 

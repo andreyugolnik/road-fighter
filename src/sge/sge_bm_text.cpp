@@ -21,18 +21,18 @@
 *  Thanks to Karl Bartel for the SFont format!
 */
 
-#include "SDL.h"
-#include <stdarg.h>
-#include <string.h>
-#include <math.h>
-#include <new>
 #include "sge_surface.h"
 #include "sge_bm_text.h"
 #include "sge_tt_text.h"
 #include "sge_textpp.h"
 
+#include <cmath>
+#include <cstdarg>
+#include <cstring>
+#include <new>
+
 #ifdef _SGE_HAVE_IMG
-#include <SDL_image.h>
+#include <SDL/SDL_image.h>
 #endif
 
 using namespace std;

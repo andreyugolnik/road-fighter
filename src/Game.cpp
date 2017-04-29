@@ -81,10 +81,10 @@ void CGame::init_game(const char* mapname)
 
     init_quick_tables();
 
-    font = TTF_OpenFont("fonts/tanglewo.ttf", 16);
+    font = loadFont("fonts/tanglewo.ttf", 16);
 
-    player1_car = IMG_Load("graphics/car1.bmp");
-    player2_car = IMG_Load("graphics/car2.bmp");
+    player1_car = loadImage("graphics/car1.bmp");
+    player2_car = loadImage("graphics/car2.bmp");
 
     player_tiles.Add(new CTile(0, 0, 32, 32, player1_car, true));
     player_tiles.Add(new CTile(0, 32, 32, 32, player1_car, true));
@@ -106,14 +106,14 @@ void CGame::init_game(const char* mapname)
     player_tiles.Add(new CTile(0, 224, 32, 32, player2_car, true));
     player_tiles.Add(new CTile(0, 256, 32, 32, player2_car, true));
 
-    enemy_cars = IMG_Load("graphics/enemycars.bmp");
+    enemy_cars = loadImage("graphics/enemycars.bmp");
 
     enemy_tiles.Add(new CTile(0, 0, 32, 32, enemy_cars, true));
     enemy_tiles.Add(new CTile(0, 32, 32, 32, enemy_cars, true));
     enemy_tiles.Add(new CTile(0, 64, 32, 32, enemy_cars, true));
     enemy_tiles.Add(new CTile(0, 96, 32, 64, enemy_cars, true));
 
-    fuel_sfc = IMG_Load("graphics/fuel.bmp");
+    fuel_sfc = loadImage("graphics/fuel.bmp");
 
     if (start_delay != default_start_delay)
     { /* There is a SEMAPHORE */
@@ -129,14 +129,14 @@ void CGame::init_game(const char* mapname)
         objects.Add(new CEnemyRacerCarObject((dx / 2) + 14, dy - 368, enemy_tiles[0], start_delay, this));
     }
 
-    empty_sfc = IMG_Load("graphics/empty.bmp");
-    fuelscores_sfc = IMG_Load("graphics/fuel_scores.bmp");
-    //	start_sfc=IMG_Load("graphics/start.bmp");
-    checkpoint_sfc = IMG_Load("graphics/checkpoint.bmp");
-    goal_sfc = IMG_Load("graphics/goal.bmp");
-    obstacles_sfc = IMG_Load("graphics/obstacles.bmp");
-    pause_sfc = IMG_Load("graphics/pause.bmp");
-    explosion_sfc = IMG_Load("graphics/explosion.bmp");
+    empty_sfc = loadImage("graphics/empty.bmp");
+    fuelscores_sfc = loadImage("graphics/fuel_scores.bmp");
+    //	start_sfc=loadImage("graphics/start.bmp");
+    checkpoint_sfc = loadImage("graphics/checkpoint.bmp");
+    goal_sfc = loadImage("graphics/goal.bmp");
+    obstacles_sfc = loadImage("graphics/obstacles.bmp");
+    pause_sfc = loadImage("graphics/pause.bmp");
+    explosion_sfc = loadImage("graphics/explosion.bmp");
 
     extra_tiles.Add(new CTile(0, 0, 32, 32, fuel_sfc, true)); /* 0 */
 
@@ -229,7 +229,7 @@ CGame::CGame(const char* mapname, int mode, int left_key, int right_key, int fir
     }
 
     CObject* o = new CPlayerCarObject((dx / 2) - 30, dy - 128, &player_tiles, 0, 8,
-                             left_key, right_key, fire_key, score, start_delay + 8, this);
+                                      left_key, right_key, fire_key, score, start_delay + 8, this);
     objects.Add(o);
     focusing_objects.Add(o);
     checkpoint_delay.Add(new int(-1));
@@ -250,7 +250,7 @@ CGame::CGame(const char* mapname, int mode, int left_key1, int right_key1, int f
     game_remake_extras = extras;
 
     CObject* o = new CPlayerCarObject((dx / 2) - 30, dy - 128, &player_tiles, 0, 8,
-                             left_key1, right_key1, fire_key1, score1, start_delay + 8, this);
+                                      left_key1, right_key1, fire_key1, score1, start_delay + 8, this);
     objects.Add(o);
     focusing_objects.Add(o);
     checkpoint_delay.Add(new int(-1));
