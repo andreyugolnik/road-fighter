@@ -3,6 +3,8 @@
 #include "Assets.h"
 #include "Objects/SemaphoreObject.h"
 
+#include <cstring>
+
 bool CGame::load_map(const char* mapname)
 {
     FILE* fp;

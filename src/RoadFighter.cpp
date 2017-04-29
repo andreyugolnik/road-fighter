@@ -11,6 +11,12 @@
 #include <cstdio>
 #include <cstdlib>
 
+#if defined(EMSCRIPTEN)
+#include <emscripten.h>
+#define SDL_GetKeyState SDL_GetKeyboardState
+#define SDL_DisplayFormat SDL_DisplayFormatAlpha
+#endif
+
 extern int MAX_SPEED;
 extern int MAX_FUEL;
 extern int SCREEN_X;

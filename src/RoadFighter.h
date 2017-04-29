@@ -4,6 +4,7 @@
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
+#include <cstdio>
 
 #define QUIT_STATE -1
 #define KONAMI_STATE 0

@@ -38,22 +38,6 @@ TTF_Font* loadFont(const char* path, int size)
 }
 
 #ifndef _WIN32
-#ifndef HAVE_STRLWR
-
-char* strlwr(char* str)
-{
-    char* ptr;
-
-    ptr = str;
-    while (*ptr)
-    {
-        *ptr = tolower(*ptr);
-        ptr++;
-    }
-    return str;
-}
-
-#endif
 
 struct timeval init_tick_count_value;
 

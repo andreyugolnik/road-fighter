@@ -13,6 +13,7 @@
 // #endif
 
 #include <SDL/SDL.h>
+#include <cstdlib>
 
 /*						GLOBAL VARIABLES INITIALIZATION:							*/
 

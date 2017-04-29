@@ -34,11 +34,6 @@ TTF_Font* loadFont(const char* path, int size);
 #endif
 
 #ifndef _WIN32
-#ifndef HAVE_STRLWR
-
-char* strlwr(char* str);
-
-#endif
 
 void setupTickCount();
 long GetTickCount();

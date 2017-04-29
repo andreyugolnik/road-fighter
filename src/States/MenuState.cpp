@@ -3,6 +3,7 @@
 #include "sge/sge.h"
 
 #include <cmath>
+#include <cstdlib>
 
 // #ifdef _WIN32
 // #include <windows.h>
