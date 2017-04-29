@@ -26,4 +26,5 @@ build/
 proguard-project.txt
 project.properties
 project.xcworkspace/
+src/Config.h
 tags

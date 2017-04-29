@@ -35,24 +35,18 @@ link_directories(
     )
 
 file( GLOB_RECURSE GAME_SOURCES "src/*.cpp" )
-file( GLOB_RECURSE GAME_RESOURCES "graphics/*" )
 
-# set(APP_TITLE           "Road Fighter" CACHE STRING "Application name")
-# set(APP_VERSION_MAJOR   "1" CACHE STRING "Application major version")
-# set(APP_VERSION_MINOR   "0" CACHE STRING "Application minor version")
-# set(APP_VERSION_RELEASE "0" CACHE STRING "Application release version")
+set(APP_TITLE           "Road Fighter" CACHE STRING "Application name")
+set(APP_VERSION_MAJOR   "1" CACHE STRING "Application major version")
+set(APP_VERSION_MINOR   "0" CACHE STRING "Application minor version")
+set(APP_VERSION_RELEASE "0" CACHE STRING "Application release version")
 set(VERSION "${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}${APP_VERSION_RELEASE}")
 message(STATUS "Version ${VERSION}")
 
-# if(APPLE)
-    # set(GAME_RESOURCES_PREFIX "/Users/andrey/projects/External/roadfighter-1.0.1269/roadfighter.app/Contents/Resources/" CACHE STRING "Resources prefix")
-# else()
-    # set(GAME_RESOURCES_PREFIX "" CACHE STRING "Resources prefix")
-# endif()
-# configure_file(
-    # "${CMAKE_CURRENT_SOURCE_DIR}/src/Config.h.in"
-    # "${CMAKE_CURRENT_SOURCE_DIR}/src/Config.h"
-    # )
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Config.h.in"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Config.h"
+    )
 
 if(APPLE)
     list( REMOVE_ITEM GAME_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/Assets.cpp")
@@ -60,9 +54,8 @@ if(APPLE)
 
     set(GAME_ICON ${CMAKE_CURRENT_SOURCE_DIR}/res/Icon.icns)
     set_source_files_properties(${GAME_ICON} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
-    # set( GAME_RESOURCES "graphics/*" "fonts/*" )
 
-    add_executable(roadfighter MACOSX_BUNDLE ${GAME_ICON} ${GAME_SOURCES} ${GAME_RESOURCES})
+    add_executable(roadfighter MACOSX_BUNDLE ${GAME_ICON} ${GAME_SOURCES})
 
     set_target_properties(roadfighter PROPERTIES
         MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/res/Info.plist.in

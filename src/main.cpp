@@ -1,5 +1,6 @@
 #include "Assets.h"
 #include "Auxiliar.h"
+#include "Config.h"
 #include "Debug.h"
 #include "RoadFighter.h"
 
@@ -21,7 +22,7 @@ const int REDRAWING_PERIOD = 27; /* This is for 35fps */
 int SCREEN_X = 512;
 int SCREEN_Y = 384;
 const int COLOUR_DEPTH = 32;
-const char* application_name = "Road Fighter v1.0";
+char application_name[100];
 
 #ifdef _WIN32
 bool fullscreen = true;
@@ -137,6 +138,7 @@ int main(int argc, char** argv)
 #endif
 
     assets::initialize();
+    ::snprintf(application_name, sizeof(application_name), "%s v%d.%d.%d", Game_Title, Game_VerMajor, Game_VerMinor, Game_VerRelease);
 
     int time, act_time;
     SDL_Event event;

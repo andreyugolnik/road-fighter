@@ -7,8 +7,8 @@ namespace assets
 {
     namespace
     {
-        char m_assetsPath[1024];
-        unsigned m_assetsPathLength;
+        char m_assetsPath[1024] = { 0 };
+        unsigned m_assetsPathLength = 0;
     }
 
     void initialize()
@@ -33,16 +33,8 @@ namespace assets
             if (p != nullptr)
             {
                 p[1] = 0;
-                ::strcat(m_assetsPath, "Resources/");
+                ::strcat(m_assetsPath, "Resources/assets/");
             }
-            else
-            {
-                m_assetsPath[0] = 0;
-            }
-        }
-        else
-        {
-            m_assetsPath[0] = 0;
         }
 
         m_assetsPathLength = ::strlen(m_assetsPath);

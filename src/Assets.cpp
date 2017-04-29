@@ -6,14 +6,14 @@ namespace assets
 {
     namespace
     {
-        char m_assetsPath[1024];
-        unsigned m_assetsPathLength;
+        char m_assetsPath[1024] = { 0 };
+        unsigned m_assetsPathLength = 0;
     }
 
     void initialize()
     {
-        m_assetsPathLength = 0;
-        m_assetsPathLength = 0;
+        ::strncpy(m_assetsPath, "assets/", sizeof(m_assetsPath));
+        m_assetsPathLength = ::strlen(m_assetsPath);
     }
 
     void deinitialize()

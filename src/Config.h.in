@@ -1,0 +1,6 @@
+#pragma once
+
+const char* Game_Title = "${APP_TITLE}";
+const int Game_VerMajor = ${APP_VERSION_MAJOR};
+const int Game_VerMinor = ${APP_VERSION_MINOR};
+const int Game_VerRelease = ${APP_VERSION_RELEASE};
