@@ -6,6 +6,10 @@
 
 #include <SDL/SDL_image.h>
 
+#if defined(EMSCRIPTEN)
+#define SDL_DisplayFormat SDL_DisplayFormatAlpha
+#endif
+
 int interlevel_time = 25;
 int nlevels = 6;
 extern int SCREEN_X;

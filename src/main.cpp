@@ -15,6 +15,10 @@
 #include <SDL/SDL.h>
 #include <cstdlib>
 
+#if defined(EMSCRIPTEN)
+#include <emscripten.h>
+#endif
+
 /*						GLOBAL VARIABLES INITIALIZATION:							*/
 
 const int REDRAWING_PERIOD = 27; /* This is for 35fps */
@@ -31,6 +35,8 @@ bool fullscreen = true;
 bool fullscreen = false;
 #endif
 
+bool quit = false;
+int time = 0;
 int init_time = 0;
 SDL_Surface* screen_sfc;
 CRoadFighter* game = 0;
@@ -108,83 +114,40 @@ void finalizeSDL()
     SDL_Quit();
 }
 
-#ifdef _WIN32
-int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                   LPSTR lpCmdLine, int nCmdShow)
+void gameLoop()
 {
-    {
-        int tmp;
-        if (1 == sscanf(lpCmdLine, "%i", &tmp))
-        {
-            start_level = tmp;
-            if (start_level < 1 || start_level > 6)
-                start_level = 1;
-        }
-    }
-
-#else
-int main(int argc, char** argv)
-{
-    setupTickCount();
-
-    {
-        int tmp;
-        if (argc == 2 && 1 == sscanf(argv[1], "%i", &tmp))
-        {
-            start_level = tmp;
-            if (start_level < 1 || start_level > 6)
-                start_level = 1;
-        }
-    }
-#endif
-
-    assets::initialize();
-    ::snprintf(application_name, sizeof(application_name), "%s v%d.%d.%d", Game_Title, Game_VerMajor, Game_VerMinor, Game_VerRelease);
-
-    int time, act_time;
     SDL_Event event;
-    bool quit = false;
-
-    time = init_time = GetTickCount();
-    screen_sfc = initializeSDL((fullscreen ? SDL_FULLSCREEN : 0));
-    if (screen_sfc == 0)
-        return 0;
-
-    game = new CRoadFighter();
-
-    while (!quit)
+    while (SDL_PollEvent(&event))
     {
-        while (SDL_PollEvent(&event))
+        switch (event.type)
         {
-            switch (event.type)
+        /* Keyboard event */
+        case SDL_KEYDOWN:
+            // quit
+            if (event.key.keysym.sym == SDLK_F12)
             {
-            /* Keyboard event */
-            case SDL_KEYDOWN:
-                // quit
-                if (event.key.keysym.sym == SDLK_F12)
+                quit = true;
+            }
+            if (event.key.keysym.sym == SDLK_F4)
+            {
+                SDLMod modifiers;
+                modifiers = SDL_GetModState();
+                if ((modifiers & KMOD_ALT) != 0)
                 {
                     quit = true;
                 }
-                if (event.key.keysym.sym == SDLK_F4)
-                {
-                    SDLMod modifiers;
-                    modifiers = SDL_GetModState();
-                    if ((modifiers & KMOD_ALT) != 0)
-                    {
-                        quit = true;
-                    }
-                }
+            }
 #ifdef __APPLE__
-                // different quit shortcut on OSX: apple+Q
-                if (event.key.keysym.sym == SDLK_q)
+            // different quit shortcut on OSX: apple+Q
+            if (event.key.keysym.sym == SDLK_q)
+            {
+                SDLMod modifiers;
+                modifiers = SDL_GetModState();
+                if ((modifiers & KMOD_META) != 0)
                 {
-                    SDLMod modifiers;
-                    modifiers = SDL_GetModState();
-                    if ((modifiers & KMOD_META) != 0)
-                    {
-                        quit = true;
-                    }
+                    quit = true;
                 }
+            }
 #endif
 // fullscreen
 /*
@@ -192,95 +155,153 @@ FIXME: the code below is a big copy/paste; it should be in a separate function i
 */
 
 #ifdef __APPLE__
-                if (event.key.keysym.sym == SDLK_f)
+            if (event.key.keysym.sym == SDLK_f)
+            {
+                SDLMod modifiers;
+
+                modifiers = SDL_GetModState();
+
+                if ((modifiers & KMOD_META) != 0)
                 {
-                    SDLMod modifiers;
-
-                    modifiers = SDL_GetModState();
-
-                    if ((modifiers & KMOD_META) != 0)
+                    Stop_playback();
+                    /* Toogle FULLSCREEN mode: */
+                    if (fullscreen)
+                        fullscreen = false;
+                    else
+                        fullscreen = true;
+                    SDL_QuitSubSystem(SDL_INIT_VIDEO);
+                    SDL_InitSubSystem(SDL_INIT_VIDEO);
+                    if (SDL_WasInit(SDL_INIT_VIDEO))
                     {
-                        Stop_playback();
-                        /* Toogle FULLSCREEN mode: */
-                        if (fullscreen)
-                            fullscreen = false;
-                        else
-                            fullscreen = true;
-                        SDL_QuitSubSystem(SDL_INIT_VIDEO);
-                        SDL_InitSubSystem(SDL_INIT_VIDEO);
-                        if (SDL_WasInit(SDL_INIT_VIDEO))
-                        {
-                            screen_sfc = SDL_SetVideoMode(SCREEN_X, SCREEN_Y, COLOUR_DEPTH,
-                                                          (fullscreen ? SDL_FULLSCREEN : 0) | screen_flags);
-                            SDL_WM_SetCaption(application_name, 0);
-                            SDL_ShowCursor(SDL_DISABLE);
-                        }
-                        else
-                        {
-                            quit = true;
-                        }
-                        Resume_playback();
+                        screen_sfc = SDL_SetVideoMode(SCREEN_X, SCREEN_Y, COLOUR_DEPTH,
+                                                      (fullscreen ? SDL_FULLSCREEN : 0) | screen_flags);
+                        SDL_WM_SetCaption(application_name, 0);
+                        SDL_ShowCursor(SDL_DISABLE);
                     }
+                    else
+                    {
+                        quit = true;
+                    }
+                    Resume_playback();
                 }
+            }
 #endif
 
-                if (event.key.keysym.sym == SDLK_RETURN)
+            if (event.key.keysym.sym == SDLK_RETURN)
+            {
+                SDLMod modifiers;
+
+                modifiers = SDL_GetModState();
+
+                if ((modifiers & KMOD_ALT) != 0)
                 {
-                    SDLMod modifiers;
-
-                    modifiers = SDL_GetModState();
-
-                    if ((modifiers & KMOD_ALT) != 0)
+                    Stop_playback();
+                    /* Toogle FULLSCREEN mode: */
+                    if (fullscreen)
+                        fullscreen = false;
+                    else
+                        fullscreen = true;
+                    SDL_QuitSubSystem(SDL_INIT_VIDEO);
+                    SDL_InitSubSystem(SDL_INIT_VIDEO);
+                    if (SDL_WasInit(SDL_INIT_VIDEO))
                     {
-                        Stop_playback();
-                        /* Toogle FULLSCREEN mode: */
-                        if (fullscreen)
-                            fullscreen = false;
-                        else
-                            fullscreen = true;
-                        SDL_QuitSubSystem(SDL_INIT_VIDEO);
-                        SDL_InitSubSystem(SDL_INIT_VIDEO);
-                        if (SDL_WasInit(SDL_INIT_VIDEO))
-                        {
-                            screen_sfc = SDL_SetVideoMode(SCREEN_X, SCREEN_Y, COLOUR_DEPTH,
-                                                          (fullscreen ? SDL_FULLSCREEN : 0) | screen_flags);
-                            SDL_WM_SetCaption(application_name, 0);
-                            SDL_ShowCursor(SDL_DISABLE);
-                        }
-                        else
-                        {
-                            quit = true;
-                        }
-                        Resume_playback();
+                        screen_sfc = SDL_SetVideoMode(SCREEN_X, SCREEN_Y, COLOUR_DEPTH,
+                                                      (fullscreen ? SDL_FULLSCREEN : 0) | screen_flags);
+                        SDL_WM_SetCaption(application_name, 0);
+                        SDL_ShowCursor(SDL_DISABLE);
                     }
+                    else
+                    {
+                        quit = true;
+                    }
+                    Resume_playback();
                 }
-                break;
-
-            /* SDL_QUIT event (window close) */
-            case SDL_QUIT:
-                quit = true;
-                break;
             }
-        }
+            break;
 
-        act_time = GetTickCount();
-        if (act_time - time >= REDRAWING_PERIOD)
+        /* SDL_QUIT event (window close) */
+        case SDL_QUIT:
+            quit = true;
+            break;
+        }
+    }
+
+    const int act_time = GetTickCount();
+    if (act_time - time >= REDRAWING_PERIOD)
+    {
+        if ((act_time - init_time) >= 1000)
         {
-            if ((act_time - init_time) >= 1000)
-                init_time = act_time;
-
-            time += REDRAWING_PERIOD;
-            if ((act_time - time) > 2 * REDRAWING_PERIOD)
-                time = act_time;
-
-            if (!game->cycle())
-                quit = true;
-            SDL_SetClipRect(screen_sfc, 0);
-            game->draw(screen_sfc);
-            SDL_Flip(screen_sfc);
+            init_time = act_time;
         }
+
+        time += REDRAWING_PERIOD;
+        if ((act_time - time) > 2 * REDRAWING_PERIOD)
+        {
+            time = act_time;
+        }
+
+        if (!game->cycle())
+        {
+            quit = true;
+        }
+    }
+
+    SDL_SetClipRect(screen_sfc, 0);
+    game->draw(screen_sfc);
+    SDL_Flip(screen_sfc);
+}
+
+void parseCmdLine(const char* cmdLine)
+{
+    int tmp;
+    if (1 == sscanf(cmdLine, "%i", &tmp))
+    {
+        start_level = tmp;
+        if (start_level < 1 || start_level > 6)
+            start_level = 1;
+    }
+}
+
+#ifdef _WIN32
+int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+                   LPSTR lpCmdLine, int nCmdShow)
+{
+    parseCmdLine(lpCmdLine);
+
+#else
+int main(int argc, char** argv)
+{
+    setupTickCount();
+
+    if (argc == 2)
+    {
+        parseCmdLine(argv[1]);
+    }
+#endif
+
+    assets::initialize();
+    ::snprintf(application_name, sizeof(application_name), "%s v%d.%d.%d", Game_Title, Game_VerMajor, Game_VerMinor, Game_VerRelease);
+
+    quit = false;
+    time = GetTickCount();
+    init_time = time;
+
+    screen_sfc = initializeSDL((fullscreen ? SDL_FULLSCREEN : 0));
+    if (screen_sfc == 0)
+        return 0;
+
+    game = new CRoadFighter();
+
+#if defined(EMSCRIPTEN)
+    emscripten_set_main_loop(gameLoop, 0, 1);
+#else
+    while (!quit)
+    {
+        gameLoop();
+
         SDL_Delay(1);
     }
+#endif
 
     delete game;
 

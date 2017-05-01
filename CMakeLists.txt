@@ -19,17 +19,19 @@ endif()
 
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11" )
 
-if( CMAKE_BUILD_PLATFORM STREQUAL "Emscripten" )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL=1 -s USE_SDL_IMAGE=1 -s STB_IMAGE=1 -s TOTAL_MEMORY=32000000" )
-    set( CMAKE_EXE_LINKER_FLAGS "-o index.html --embed-file arkanoidsb.pak" )
-endif()
+if( ${CMAKE_SYSTEM_NAME} STREQUAL "Emscripten" )
 
-if(NOT CMAKE_BUILD_PLATFORM)
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL=1 -s USE_SDL_IMAGE=1 -s STB_IMAGE=1 -s TOTAL_MEMORY=67108864" )
+    set( CMAKE_EXE_LINKER_FLAGS "-o index.html --embed-file assets" )
+
+else()
+
     find_package(PkgConfig)
     find_package(SDL REQUIRED)
     find_package(SDL_image REQUIRED)
     find_package(SDL_mixer REQUIRED)
     find_package(SDL_ttf REQUIRED)
+
 endif()
 
 include_directories(
@@ -55,14 +57,17 @@ configure_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Config.h"
     )
 
-if(APPLE AND NOT CMAKE_BUILD_PLATFORM)
+if(APPLE AND NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Emscripten")
     list( REMOVE_ITEM GAME_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/Assets.cpp")
     set(GAME_SOURCES ${GAME_SOURCES} "src/Assets.mm")
 
     set(GAME_ICON ${CMAKE_CURRENT_SOURCE_DIR}/res/Icon.icns)
+    # set(GAME_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/assets)
     set_source_files_properties(${GAME_ICON} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
+    # set_source_files_properties(${GAME_RESOURCES} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 
-    add_executable(roadfighter MACOSX_BUNDLE ${GAME_ICON} ${GAME_SOURCES})
+    # add_executable(roadfighter MACOSX_BUNDLE ${GAME_ICON} ${GAME_SOURCES})
+    add_executable(roadfighter MACOSX_BUNDLE ${GAME_ICON} ${GAME_RESOURCES} ${GAME_SOURCES})
 
     set_target_properties(roadfighter PROPERTIES
         MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/res/Info.plist.in

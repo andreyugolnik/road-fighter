@@ -47,20 +47,20 @@ int Sound_initialization(int nc, int nrc)
     }
 
     SDL_AudioDriverName(SoundcardName, sizeof(SoundcardName));
-    Mix_QuerySpec(&audio_rate, &audio_format, &audio_channels);
-    output_debug_message("    opened %s at %d Hz %d bit %s, %d bytes audio buffer\n",
-                         SoundcardName, audio_rate, audio_format & 0xFF,
-                         audio_channels > 1 ? "stereo" : "mono", audio_bufsize);
+    // Mix_QuerySpec(&audio_rate, &audio_format, &audio_channels);
+    // output_debug_message("    opened %s at %d Hz %d bit %s, %d bytes audio buffer\n",
+                         // SoundcardName, audio_rate, audio_format & 0xFF,
+                         // audio_channels > 1 ? "stereo" : "mono", audio_bufsize);
 
-    MIX_VERSION(&compile_version);
-    output_debug_message("    compiled with SDL_mixer version: %d.%d.%d\n",
-                         compile_version.major,
-                         compile_version.minor,
-                         compile_version.patch);
-    output_debug_message("    running with SDL_mixer version: %d.%d.%d\n",
-                         Mix_Linked_Version()->major,
-                         Mix_Linked_Version()->minor,
-                         Mix_Linked_Version()->patch);
+    // MIX_VERSION(&compile_version);
+    // output_debug_message("    compiled with SDL_mixer version: %d.%d.%d\n",
+                         // compile_version.major,
+                         // compile_version.minor,
+                         // compile_version.patch);
+    // output_debug_message("    running with SDL_mixer version: %d.%d.%d\n",
+                         // Mix_Linked_Version()->major,
+                         // Mix_Linked_Version()->minor,
+                         // Mix_Linked_Version()->patch);
 
     if (nc > 0)
         n_channels = Mix_AllocateChannels(nc);
@@ -118,20 +118,20 @@ int Resume_playback(int nc, int nrc)
     }
 
     SDL_AudioDriverName(SoundcardName, sizeof(SoundcardName));
-    Mix_QuerySpec(&audio_rate, &audio_format, &audio_channels);
-    output_debug_message("    opened %s at %d Hz %d bit %s, %d bytes audio buffer\n",
-                         SoundcardName, audio_rate, audio_format & 0xFF,
-                         audio_channels > 1 ? "stereo" : "mono", audio_bufsize);
+    // Mix_QuerySpec(&audio_rate, &audio_format, &audio_channels);
+    // output_debug_message("    opened %s at %d Hz %d bit %s, %d bytes audio buffer\n",
+                         // SoundcardName, audio_rate, audio_format & 0xFF,
+                         // audio_channels > 1 ? "stereo" : "mono", audio_bufsize);
 
-    MIX_VERSION(&compile_version);
-    output_debug_message("    compiled with SDL_mixer version: %d.%d.%d\n",
-                         compile_version.major,
-                         compile_version.minor,
-                         compile_version.patch);
-    output_debug_message("    running with SDL_mixer version: %d.%d.%d\n",
-                         Mix_Linked_Version()->major,
-                         Mix_Linked_Version()->minor,
-                         Mix_Linked_Version()->patch);
+    // MIX_VERSION(&compile_version);
+    // output_debug_message("    compiled with SDL_mixer version: %d.%d.%d\n",
+                         // compile_version.major,
+                         // compile_version.minor,
+                         // compile_version.patch);
+    // output_debug_message("    running with SDL_mixer version: %d.%d.%d\n",
+                         // Mix_Linked_Version()->major,
+                         // Mix_Linked_Version()->minor,
+                         // Mix_Linked_Version()->patch);
 
     if (nc > 0)
         n_channels = Mix_AllocateChannels(nc);

@@ -1,6 +1,10 @@
 #include "Auxiliar.h"
 #include "RoadFighter.h"
 
+#if defined(EMSCRIPTEN)
+#define SDL_DisplayFormat SDL_DisplayFormatAlpha
+#endif
+
 int gameover_time = 25;
 
 int CRoadFighter::gameover_cycle()
