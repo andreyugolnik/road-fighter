@@ -35,6 +35,10 @@
 #include <SDL/SDL_image.h>
 #endif
 
+#if defined(EMSCRIPTEN)
+#define SDL_DisplayFormat SDL_DisplayFormatAlpha
+#endif
+
 using namespace std;
 
 /* Globals used for sge_Update/sge_Lock (defined in sge_surface) */

@@ -24,6 +24,7 @@
 
 #include <cmath>
 #include <cstdarg>
+#include <cstdio>
 #include <cstring>
 
 /* Globals used for sge_Update/sge_Lock */

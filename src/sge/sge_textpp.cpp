@@ -26,6 +26,9 @@
 
 #ifndef _SGE_NO_CLASSES
 
+#if defined(EMSCRIPTEN)
+#define SDL_DisplayFormat SDL_DisplayFormatAlpha
+#endif
 
 using namespace std;
 
