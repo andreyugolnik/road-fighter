@@ -1,8 +1,8 @@
 #include "Object.h"
 #include "Tile.h"
 
-#include <SDL/SDL_mixer.h>
-#include <SDL/SDL_ttf.h>
+#include <SDL_mixer.h>
+#include <SDL_ttf.h>
 
 CObject::CObject()
     : state(0)

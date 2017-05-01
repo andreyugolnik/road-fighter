@@ -14,8 +14,8 @@
 #include <cstdlib>
 #include <cstring>
 
-#include <SDL/SDL_image.h>
-#include <SDL/SDL_mixer.h>
+#include <SDL_image.h>
+#include <SDL_mixer.h>
 
 extern int MAX_SPEED;
 int PLAYING_WINDOW = 384 + 64;

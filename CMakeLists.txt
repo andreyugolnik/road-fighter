@@ -35,7 +35,7 @@ else()
 endif()
 
 include_directories(
-    ${SDL_INCLUDE_DIRS}
+    ${SDL_INCLUDE_DIR}
     "src"
     )
 

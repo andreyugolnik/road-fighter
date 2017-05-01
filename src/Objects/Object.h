@@ -10,7 +10,7 @@
 
 #include "List.h"
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 class CTile;
 

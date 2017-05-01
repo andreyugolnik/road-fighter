@@ -10,7 +10,7 @@
 #include <sys/time.h>
 #endif
 
-#include <SDL/SDL_image.h>
+#include <SDL_image.h>
 #include <algorithm>
 #include <cmath>
 #include <cstdio>

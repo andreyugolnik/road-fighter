@@ -4,7 +4,7 @@
 #include "List.h"
 #include "RoadFighter.h"
 
-#include <SDL/SDL_image.h>
+#include <SDL_image.h>
 
 #if defined(EMSCRIPTEN)
 #define SDL_DisplayFormat SDL_DisplayFormatAlpha
