@@ -39,7 +39,8 @@ CTile::CTile(int x, int y, int dx, int dy, SDL_Surface* o, bool collision)
         mask_collision = SDL_CreateRGBSurface(0, r.w, r.h, 32, RMASK, GMASK, BMASK, AMASK);
         SDL_BlitSurface(o, &r2, mask_collision, 0);
         surface_bw(mask_collision, 128);
-        collision_data = sge_make_cmap(mask_collision);
+        Uint32 colorKey = 0;//mask_collision->format->colorkey;
+        collision_data = sge_make_cmap(mask_collision, colorKey);
     }
     else
     {
