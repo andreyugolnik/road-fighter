@@ -32,7 +32,7 @@ typedef struct
 #ifdef _SGE_C
 extern "C" {
 #endif
-DECLSPEC sge_cdata *sge_make_cmap(SDL_Surface *img);
+DECLSPEC sge_cdata *sge_make_cmap(SDL_Surface *img, Uint32 colorKey);
 DECLSPEC int sge_bbcheck(sge_cdata *cd1,Sint16 x1,Sint16 y1, sge_cdata *cd2,Sint16 x2,Sint16 y2);
 DECLSPEC int _sge_bbcheck(Sint16 x1,Sint16 y1,Sint16 w1,Sint16 h1, Sint16 x2,Sint16 y2,Sint16 w2,Sint16 h2);
 DECLSPEC int _sge_cmcheck(sge_cdata *cd1,Sint16 x1,Sint16 y1, sge_cdata *cd2,Sint16 x2,Sint16 y2);

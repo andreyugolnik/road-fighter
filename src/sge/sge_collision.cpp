@@ -34,35 +34,45 @@ int memand(Uint8 *s1, Uint8 *s2, int shift1, int shift2, int N);
 //==================================================================================
 // Makes a new collision map from img. Set colorkey first!
 //==================================================================================
-sge_cdata *sge_make_cmap(SDL_Surface *img)
+sge_cdata *sge_make_cmap(SDL_Surface *img, Uint32 colorKey)
 {
-	sge_cdata *cdata;
-	Uint8 *map;
-	Sint16 x,y;
-	Sint32 offs;
-	int i;
-	
-	cdata=new(nothrow) sge_cdata;
-	if(!cdata){SDL_SetError("SGE - Out of memory");return NULL;}
-	cdata->w=img->w; cdata->h=img->h;
-	offs=(img->w*img->h)/8;
-	cdata->map=new(nothrow) Uint8[offs+2];
-	if(!cdata->map){SDL_SetError("SGE - Out of memory");return NULL;}
-	memset(cdata->map,0x00,offs+2);
-	
-	map=cdata->map;
-		
-	i=0;
-	for(y=0; y < img->h; y++){
-		for(x=0; x < img->w; x++){
-			if(i>7){i=0;map++;}
-			if(sge_GetPixel(img, Sint16(x),Sint16(y))!=img->format->colorkey){
-				*map=*map|sge_mask[i];	
-			}
-			i++;
-		}	
-	}
-	return cdata;
+    sge_cdata* cdata = new (nothrow) sge_cdata;
+    if (!cdata)
+    {
+        SDL_SetError("SGE - Out of memory");
+        return nullptr;
+    }
+
+    cdata->w = img->w;
+    cdata->h = img->h;
+    Sint32 offs = (img->w * img->h) / 8;
+    cdata->map = new (nothrow) Uint8[offs + 2];
+    if (!cdata->map)
+    {
+        SDL_SetError("SGE - Out of memory");
+        return nullptr;
+    }
+    memset(cdata->map, 0x00, offs + 2);
+
+    Uint8* map = cdata->map;
+
+    for (int i = 0, y = 0; y < img->h; y++)
+    {
+        for (int x = 0; x < img->w; x++)
+        {
+            if (i > 7)
+            {
+                i = 0;
+                map++;
+            }
+            if (sge_GetPixel(img, Sint16(x), Sint16(y)) != colorKey)
+            {
+                *map |= sge_mask[i];
+            }
+            i++;
+        }
+    }
+    return cdata;
 }
 
 //==================================================================================
