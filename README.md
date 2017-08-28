@@ -24,6 +24,16 @@ finished 7th out the 83 entries. Not too bad for a 2 month project :)
 * Move to C++11 standard;
 * Cmake as build system;
 
+##Dependencies##
+
+ Name          | Description / Notes
+---------------|---------------------
+`CMake`        | Cross-platform family of tools designed to build, test and package software.
+`SDL`          | SDL v1.2
+`SDL_image`    | 
+`SDL_mixer`    | 
+`SDL_ttf`      | 
+
 ```
 Copyright © 2017 Andrey A. Ugolnik. All Rights Reserved.
 http://www.ugolnik.info
