@@ -21,6 +21,7 @@
 /html/
 /roadfighter
 /roadfighter.app
+/tmp/
 Debug/
 build/
 proguard-project.txt
