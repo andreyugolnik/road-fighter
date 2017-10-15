@@ -190,7 +190,7 @@ void CRoadFighter::interlevel_draw(SDL_Surface* screen)
 {
     SDL_Rect r;
 
-    SDL_FillRect(screen, 0, 0);
+    SDL_FillRect(screen, 0, SDL_MapRGB(screen->format, 0, 0, 0));
 
     switch (interlevel_state)
     {

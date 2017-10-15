@@ -483,7 +483,7 @@ void CRoadFighter::menu_draw(SDL_Surface* screen)
                 f = 0.0;
             if (f >= 1.0)
                 f = 1.0;
-            SDL_FillRect(screen, 0, 0);
+            SDL_FillRect(screen, 0, SDL_MapRGB(screen->format, 0, 0, 0));
             SDL_BlitSurface(tittle_sfc, 0, screen, 0);
             if (f < 1.0)
                 surface_fader(screen, f, f, f, 0);
@@ -507,7 +507,7 @@ void CRoadFighter::menu_draw(SDL_Surface* screen)
             r.w = screen->w;
             r.h = screen->h;
 
-            SDL_FillRect(screen, 0, 0);
+            SDL_FillRect(screen, 0, SDL_MapRGB(screen->format, 0, 0, 0));
             SDL_BlitSurface(tittle_sfc, 0, screen, &r);
         }
         break;
@@ -521,7 +521,7 @@ void CRoadFighter::menu_draw(SDL_Surface* screen)
                 f = 0.0;
             if (f >= 1.0)
                 f = 1.0;
-            SDL_FillRect(screen, 0, 0);
+            SDL_FillRect(screen, 0, SDL_MapRGB(screen->format, 0, 0, 0));
             sge_transform(tittle_sfc, screen, 0, f, f, tittle_sfc->w / 2, tittle_sfc->h / 2, tittle_sfc->w / 2, tittle_sfc->h / 2, 0);
         }
         break;
@@ -536,7 +536,7 @@ void CRoadFighter::menu_draw(SDL_Surface* screen)
             if (f >= 1.0)
                 f = 1.0;
             a = (1.0F - f) * 260.0F;
-            SDL_FillRect(screen, 0, 0);
+            SDL_FillRect(screen, 0, SDL_MapRGB(screen->format, 0, 0, 0));
             sge_transform(tittle_sfc, screen, a, f, f, tittle_sfc->w / 2, tittle_sfc->h / 2, tittle_sfc->w / 2, tittle_sfc->h / 2, 0);
         }
         break;
@@ -552,7 +552,7 @@ void CRoadFighter::menu_draw(SDL_Surface* screen)
         SDL_Surface *menu_sfc, *options_sfc;
 
         /* Draw tittle: */
-        SDL_FillRect(screen, 0, 0);
+        SDL_FillRect(screen, 0, SDL_MapRGB(screen->format, 0, 0, 0));
         SDL_BlitSurface(tittle_sfc, 0, screen, 0);
 
         c.r = c.g = c.b = 255;
@@ -643,7 +643,7 @@ void CRoadFighter::menu_draw(SDL_Surface* screen)
         float glow;
 
         /* Draw tittle: */
-        SDL_FillRect(screen, 0, 0);
+        SDL_FillRect(screen, 0, SDL_MapRGB(screen->format, 0, 0, 0));
         SDL_BlitSurface(tittle_sfc, 0, screen, 0);
 
         c.r = c.g = c.b = 255;

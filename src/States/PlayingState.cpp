@@ -151,7 +151,7 @@ void CRoadFighter::playing_draw(SDL_Surface* screen)
 {
     SDL_Rect r;
 
-    SDL_FillRect(screen, 0, 0);
+    SDL_FillRect(screen, 0, SDL_MapRGB(screen->format, 0, 0, 0));
 
     scoreboard_draw(scoreboard_x, 0, screen);
 
