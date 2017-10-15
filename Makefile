@@ -39,14 +39,13 @@ macos_debug: debug_build
 
 emscripten:
 	$(shell if [ ! -d $(BUILD_DIR_EMSCRIPTEN) ]; then mkdir $(BUILD_DIR_EMSCRIPTEN); fi)
-	cp -r assets $(BUILD_DIR_EMSCRIPTEN)/
 	cd $(BUILD_DIR_EMSCRIPTEN) \
-		&& emcmake cmake -DCMAKE_BUILD_TYPE=Debug \
+		&& emcmake cmake -DCMAKE_BUILD_TYPE=Release \
 		-DAPP_VERSION_MAJOR:STRING=$(VER_MAJOR) -DAPP_VERSION_MINOR:STRING=$(VER_MINOR) -DAPP_VERSION_RELEASE:STRING=$(VER_RELEASE) .. \
 		&& emmake make
-	rm -fr html && mkdir html
-	cp $(BUILD_DIR_EMSCRIPTEN)/index.* html/
-	# cp -f res/index.html html/
+	rm -fr html && mkdir html \
+		&& cp $(BUILD_DIR_EMSCRIPTEN)/roadfighter.* html/ \
+		&& mv html/roadfighter.html html/index.html
 
 clean:
-	rm -fr $(BUILD_DIR_RELEASE) $(BUILD_DIR_DEBUG) $(BUILD_DIR_EMSCRIPTEN) $(BUNDLE_NAME)
+	rm -fr $(BUILD_DIR_RELEASE) $(BUILD_DIR_DEBUG) $(BUILD_DIR_EMSCRIPTEN) $(BUNDLE_NAME) html

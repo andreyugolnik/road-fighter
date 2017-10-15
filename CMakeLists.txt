@@ -10,19 +10,27 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 if( CMAKE_BUILD_TYPE STREQUAL "Release" )
     message(STATUS "=== RELEASE MODE ===")
     add_definitions( "-DNDEBUG" )
-    add_definitions( "-Wall -O2" )
+    if( ${CMAKE_SYSTEM_NAME} STREQUAL "Emscripten" )
+        add_definitions( "-Wall -O3" )
+    else()
+        add_definitions( "-Wall -O2" )
+    endif()
 else()
     message(STATUS "=== DEBUG MODE ===")
     add_definitions( "-DDEBUG" )
     add_definitions( "-Wall -Wextra -pedantic -O0 -g" )
+    if( ${CMAKE_SYSTEM_NAME} STREQUAL "Emscripten" )
+        set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s ASSERTIONS=2" )
+        set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s DEMANGLE_SUPPORT=1" )
+    endif()
 endif()
 
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11" )
 
 if( ${CMAKE_SYSTEM_NAME} STREQUAL "Emscripten" )
 
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL=1 -s USE_SDL_IMAGE=1 -s STB_IMAGE=1 -s TOTAL_MEMORY=67108864" )
-    set( CMAKE_EXE_LINKER_FLAGS "-o index.html --embed-file assets" )
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL=1 -s USE_SDL_IMAGE=1 -s STB_IMAGE=1" )
+    set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --embed-file ../assets@assets --shell-file ../res/index.html" )
 
 else()
 
@@ -77,6 +85,10 @@ if(APPLE AND NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Emscripten")
         )
 else()
     add_executable(roadfighter ${GAME_SOURCES})
+
+    if(${CMAKE_SYSTEM_NAME} STREQUAL "Emscripten")
+        set_target_properties(roadfighter PROPERTIES SUFFIX ".html")
+    endif()
 endif()
 
 target_link_libraries( roadfighter
