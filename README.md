@@ -18,10 +18,10 @@ finished 7th out the 83 entries. Not too bad for a 2 month project :)
 ##The changes I made##
 
 * Crashes fixed;
+* Linux, macOS and Web version;
 * Surface operations highly optimized;
 * Simple and stupid Asset system added;
 * Code refactored, source code and resources hierarchy fixed;
-* Application macOS Bundle added;
 * Move to C++11 standard;
 * Cmake as build system;
 
