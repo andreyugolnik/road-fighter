@@ -1,9 +1,12 @@
 VER_MAJOR=1
 VER_MINOR=1
 VER_RELEASE=0
+
 BUILD_DIR_RELEASE=.build_release
 BUILD_DIR_DEBUG=.build_debug
-BUILD_DIR_EMSCRIPTEN=.build_debug
+
+BUILD_DIR_EMSCRIPTEN=.build_emscripten
+
 BUNDLE_NAME=roadfighter
 
 UNAME=$(shell uname -s)
@@ -13,9 +16,10 @@ endif
 
 all:
 	@echo "Usage:"
-	@echo "    make <linux>  - make linux release"
-	@echo "    make <macos>  - make macos release"
-	@echo "    make <clean>  - cleanup directory"
+	@echo "    make <linux>       - make linux release"
+	@echo "    make <macos>       - make macos release"
+	@echo "    make <emscripten>  - make emscripten release"
+	@echo "    make <clean>       - cleanup directory"
 
 release_build:
 	$(shell if [ ! -d $(BUILD_DIR_RELEASE) ]; then mkdir $(BUILD_DIR_RELEASE); fi)
