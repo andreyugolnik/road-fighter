@@ -7,29 +7,35 @@ FILE* fp = nullptr;
 
 void output_debug_message(const char* fmt, ...)
 {
-    char text[256];
-    va_list ap;
-
     if (fmt == nullptr)
     {
         return;
     }
 
+    char text[1024];
+    va_list ap;
+
     va_start(ap, fmt);
-    vsprintf(text, fmt, ap);
+    ::vsnprintf(text, sizeof(text), fmt, ap);
     va_end(ap);
 
+    ::printf("dbg: %s", text);
+
+#if !defined(__EMSCRIPTEN__)
     if (fp == nullptr)
     {
         fp = f1open("roadfighter.dbg", "w", USERDATA);
     }
-
-    fprintf(fp, "%s", text);
-    fflush(fp);
+    ::fprintf(fp, "%s", text);
+    ::fflush(fp);
+#endif
 }
 
 void close_debug_messages()
 {
-    fclose(fp);
-    fp = nullptr;
+    if (fp != nullptr)
+    {
+        fclose(fp);
+        fp = nullptr;
+    }
 }
