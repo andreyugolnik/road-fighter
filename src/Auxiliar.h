@@ -47,6 +47,7 @@ void maximumpixel(SDL_Surface* surface, int x, int y, Uint32 pixel);
 Uint32 getpixel(SDL_Surface* surface, int x, int y);
 void draw_rectangle(SDL_Surface* surface, int x, int y, int w, int h, Uint32 pixel);
 void draw_line(SDL_Surface* SDL, int x1, int y1, int x2, int y2, Uint32 pixel);
+void draw_line_locked(SDL_Surface* SDL, int x1, int y1, int x2, int y2, Uint32 pixel);
 
 void surface_fader(SDL_Surface* surface, float r_factor, float g_factor, float b_factor, SDL_Rect* r);
 void surface_shader(SDL_Surface* surface, float factor, int red, int green, int blue, int alpha);

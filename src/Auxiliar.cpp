@@ -87,31 +87,33 @@ SDL_Surface* load_maskedimage(char* imagefile, char* maskfile, char* path)
 
     /* Aplicar la máscara: */
     {
-        int x, y;
-        Uint8 r, g, b, a;
-        Uint32 v;
+        SDL_LockSurface(res);
+        SDL_LockSurface(mask);
 
-        for (y = 0; y < mask->h; y++)
+        for (int y = 0; y < mask->h; y++)
         {
-            for (x = 0; x < mask->w; x++)
+            for (int x = 0; x < mask->w; x++)
             {
-                SDL_LockSurface(res);
-                v = getpixel(res, x, y);
-                SDL_UnlockSurface(res);
+                Uint32 v = getpixel(res, x, y);
+
+                Uint8 r, g, b, a;
                 SDL_GetRGBA(v, res->format, &r, &g, &b, &a);
-                SDL_LockSurface(mask);
+
                 v = getpixel(mask, x, y);
-                SDL_UnlockSurface(mask);
+
                 if (v != 0)
                     a = 255;
                 else
                     a = 0;
+
                 v = SDL_MapRGBA(res->format, r, g, b, a);
-                SDL_LockSurface(res);
+
                 putpixel(res, x, y, v);
-                SDL_UnlockSurface(res);
             }
         }
+
+        SDL_UnlockSurface(mask);
+        SDL_UnlockSurface(res);
     }
 
     SDL_FreeSurface(tmp);
@@ -368,18 +370,17 @@ void surface_bicolor(SDL_Surface* surface, float factor, int r1, int g1, int b1,
 
 void draw_rectangle(SDL_Surface* surface, int x, int y, int w, int h, Uint32 pixel)
 {
-    int i;
-
     SDL_LockSurface(surface);
 
-    for (i = 0; i < w; i++)
+    for (int i = 0; i < w; i++)
     {
         if (x + i >= 0 && x + i < surface->w && y >= 0 && y < surface->h)
             putpixel(surface, x + i, y, pixel);
         if (x + i >= 0 && x + i < surface->w && y + h - 1 >= 0 && y + h < surface->h)
             putpixel(surface, x + i, y + h - 1, pixel);
     }
-    for (i = 0; i < h; i++)
+
+    for (int i = 0; i < h; i++)
     {
         if (x >= 0 && x < surface->w && y + i >= 0 && y + i < surface->h)
             putpixel(surface, x, y + i, pixel);
@@ -392,15 +393,20 @@ void draw_rectangle(SDL_Surface* surface, int x, int y, int w, int h, Uint32 pix
 
 void draw_line(SDL_Surface* sfc, int x1, int y1, int x2, int y2, Uint32 pixel)
 {
-    long incy, rincy, incx, errterm, a;
-    long d_x, d_y;
-    int act_x, act_y;
+    SDL_LockSurface(sfc);
+    draw_line_locked(sfc, x1, y1, x2, y2, pixel);
+    SDL_UnlockSurface(sfc);
+}
 
-    act_x = x1;
-    act_y = y1;
+void draw_line_locked(SDL_Surface* sfc, int x1, int y1, int x2, int y2, Uint32 pixel)
+{
+    long incy, rincy, incx, errterm;
+
+    int act_x = x1;
+    int act_y = y1;
     errterm = 0;
-    d_x = x2 - x1;
-    d_y = y2 - y1;
+    long d_x = x2 - x1;
+    long d_y = y2 - y1;
 
     if (d_y < 0)
     {
@@ -413,6 +419,7 @@ void draw_line(SDL_Surface* sfc, int x1, int y1, int x2, int y2, Uint32 pixel)
         incy = 1;
         rincy = 1;
     }
+
     if (d_x < 0)
     {
         incx = -1;
@@ -423,12 +430,10 @@ void draw_line(SDL_Surface* sfc, int x1, int y1, int x2, int y2, Uint32 pixel)
         incx = 1;
     }
 
-    SDL_LockSurface(sfc);
-
     if (d_x > d_y)
     {
         /* xline */
-        for (a = 0; a <= d_x; a++)
+        for (long a = 0; a <= d_x; a++)
         {
             putpixel(sfc, act_x, act_y, pixel);
             errterm += d_y;
@@ -443,7 +448,7 @@ void draw_line(SDL_Surface* sfc, int x1, int y1, int x2, int y2, Uint32 pixel)
     else
     {
         /* yline */
-        for (a = 0; a <= d_y; a++)
+        for (long a = 0; a <= d_y; a++)
         {
             putpixel(sfc, act_x, act_y, pixel);
             errterm += d_x;
@@ -455,23 +460,21 @@ void draw_line(SDL_Surface* sfc, int x1, int y1, int x2, int y2, Uint32 pixel)
             act_y += incy;
         }
     }
-
-    SDL_UnlockSurface(sfc);
 }
 
 void surface_automatic_alpha(SDL_Surface* sfc)
 {
-    int i, j;
     Uint32 color;
     Uint8 r, g, b, a;
 
-    for (i = 0; i < sfc->w; i++)
+    SDL_LockSurface(sfc);
+
+    for (int i = 0; i < sfc->w; i++)
     {
-        for (j = 0; j < sfc->h; j++)
+        for (int j = 0; j < sfc->h; j++)
         {
-            SDL_LockSurface(sfc);
             color = getpixel(sfc, i, j);
-            SDL_UnlockSurface(sfc);
+
             SDL_GetRGBA(color, sfc->format, &r, &g, &b, &a);
             if (r != 0 || g != 0 || b != 0)
                 a = 255;
@@ -479,26 +482,24 @@ void surface_automatic_alpha(SDL_Surface* sfc)
                 a = 0;
             color = SDL_MapRGBA(sfc->format, r, g, b, a);
 
-            SDL_LockSurface(sfc);
             putpixel(sfc, i, j, color);
-            SDL_UnlockSurface(sfc);
         }
     }
+
+    SDL_UnlockSurface(sfc);
 }
 
 void surface_bw(SDL_Surface* sfc, int threshold)
 {
-    int i, j;
-    Uint32 color;
-    Uint8 r, g, b, a;
+    SDL_LockSurface(sfc);
 
-    for (i = 0; i < sfc->w; i++)
+    for (int i = 0; i < sfc->w; i++)
     {
-        for (j = 0; j < sfc->h; j++)
+        for (int j = 0; j < sfc->h; j++)
         {
-            SDL_LockSurface(sfc);
-            color = getpixel(sfc, i, j);
-            SDL_UnlockSurface(sfc);
+            Uint32 color = getpixel(sfc, i, j);
+
+            Uint8 r, g, b, a;
             SDL_GetRGBA(color, sfc->format, &r, &g, &b, &a);
             if (r >= threshold || g >= threshold || b >= threshold)
                 a = 255;
@@ -506,39 +507,39 @@ void surface_bw(SDL_Surface* sfc, int threshold)
                 a = 0;
             color = SDL_MapRGBA(sfc->format, a, a, a, a);
 
-            SDL_LockSurface(sfc);
             putpixel(sfc, i, j, color);
-            SDL_UnlockSurface(sfc);
         }
     }
+
+    SDL_UnlockSurface(sfc);
 }
 
 void surface_mask_from_bitmap(SDL_Surface* sfc, SDL_Surface* mask, int x, int y)
 {
-    int i, j;
-    int mean;
-    Uint32 color;
-    Uint8 r, g, b, a;
+    SDL_LockSurface(mask);
+    SDL_LockSurface(sfc);
 
-    for (i = 0; i < sfc->w; i++)
+    for (int i = 0; i < sfc->w; i++)
     {
-        for (j = 0; j < sfc->h; j++)
+        for (int j = 0; j < sfc->h; j++)
         {
-            SDL_LockSurface(mask);
-            color = getpixel(mask, x + i, y + j);
-            SDL_UnlockSurface(mask);
+            Uint32 color = getpixel(mask, x + i, y + j);
+
+            Uint8 r, g, b, a;
             SDL_GetRGBA(color, sfc->format, &r, &g, &b, &a);
-            mean = (r + g + b) / 3;
-            SDL_LockSurface(sfc);
+            int mean = (r + g + b) / 3;
+
             color = getpixel(sfc, i, j);
-            SDL_UnlockSurface(sfc);
+
             SDL_GetRGBA(color, sfc->format, &r, &g, &b, &a);
             color = SDL_MapRGBA(sfc->format, r, g, b, mean);
-            SDL_LockSurface(sfc);
+
             putpixel(sfc, i, j, color);
-            SDL_UnlockSurface(sfc);
         }
     }
+
+    SDL_UnlockSurface(sfc);
+    SDL_UnlockSurface(mask);
 }
 
 SDL_Surface* multiline_text_surface(char* text, int line_dist, TTF_Font* font, SDL_Color c)
