@@ -33,7 +33,7 @@ int Sound_initialization(int nc, int nrc)
     int audio_channels = 2;
     int audio_bufsize = AUDIO_BUFFER;
     Uint16 audio_format = AUDIO_S16;
-    SDL_version compile_version;
+    // SDL_version compile_version;
     n_channels = 8;
 
     sound_enabled = true;
@@ -104,7 +104,7 @@ int Resume_playback(int nc, int nrc)
     int audio_channels = 2;
     int audio_bufsize = AUDIO_BUFFER;
     Uint16 audio_format = AUDIO_S16;
-    SDL_version compile_version;
+    // SDL_version compile_version;
     n_channels = 8;
 
     sound_enabled = true;
@@ -145,20 +145,22 @@ int Resume_playback(int nc, int nrc)
 
 SOUNDT Sound_create_sound(const char* file)
 {
-    const char* ext[] = { ".wav", ".ogg" };
+    const char* ext[] = { "ogg", "wav" };
     char name[256];
 
     if (sound_enabled)
     {
         for (auto e : ext)
         {
-            ::snprintf(name, sizeof(name), "%s%s", file, e);
+            ::snprintf(name, sizeof(name), "%s.%s", file, e);
             auto sound = loadSound(name);
             if (sound != nullptr)
             {
                 return sound;
             }
         }
+
+        output_debug_message("ERROR in Sound_create_sound(): %s.(wav|ogg)\n", file);
     }
 
     return nullptr;
@@ -230,14 +232,14 @@ void Sound_play_ch(SOUNDT s, int ch, int volume)
 
 Mix_Music* Sound_create_stream(const char* file)
 {
-    const char* ext[] = { ".ogg", ".wav" };
+    const char* ext[] = { "ogg", "wav" };
     char name[256];
 
     if (sound_enabled)
     {
         for (auto e : ext)
         {
-            ::snprintf(name, sizeof(name), "%s%s", file, e);
+            ::snprintf(name, sizeof(name), "%s.%s", file, e);
             auto music = loadMusic(name);
             if (music != nullptr)
             {
@@ -245,7 +247,7 @@ Mix_Music* Sound_create_stream(const char* file)
             }
         }
 
-        output_debug_message("ERROR in Sound_create_stream(): Could not load sound file: %s.(wav|ogg)\n", file);
+        output_debug_message("ERROR in Sound_create_stream(): %s.(wav|ogg)\n", file);
     }
 
     return nullptr;
