@@ -4,65 +4,47 @@
 #include <cstring>
 #include <sys/stat.h>
 
-#ifndef _WIN32
-// make (sub)directories including multiple subdirs
-int mkdirp(const char* fqfn, mode_t mode)
-{
-    char *t, str[STRLEN];
-    struct stat stbuf;
-    int len;
+#define STRLEN 4096
+#define GAMENAME "roadfighter"
 
-    t = (char*)fqfn;
-    memset(str, '\0', STRLEN);
-
-    while (*t)
-    {
-        if (*t == '/')
-        {
-            len = t - fqfn;
-            if ((len < STRLEN) && (len > 0))
-            {
-                strncpy(str, fqfn, len);
-                if (stat(str, &stbuf) != 0)
-                    if (mkdir(str, mode) != 0)
-                        return (-1);
-            }
-        }
-        t++;
-    }
-
-    return (0);
-}
-#endif
-
-// new fopen()
 FILE* f1open(const char* f, const char* m, const enum filetype t)
 {
-#ifdef _WIN32
-    // nothing changed here, works perfectly :)
-    return (fopen(f, m));
-#else
-    // *nix is a bitch ;)
+    if (t == GAMEDATA)
+    {
+        return ::fopen(f, m);
+    }
+
     char fname[STRLEN];
 
-    switch (t)
-    {
-    case GAMEDATA:
-        // gamedata is read-only
-        return (fopen(f, m));
-        break;
+#if defined(_WIN32)
 
-    case USERDATA:
-        // userdata is put in $HOME/.GAMENAME/
-        snprintf(fname, STRLEN - 1, "%s/.%s/%s", getenv("HOME"), GAMENAME, f);
-        // create subdirs if they don't exist
-        mkdirp(fname, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
-        // open file
-        return (fopen(fname, m));
-        break;
+    char buffer[STRLEN];
+    ExpandEnvironmentStrings("%USERPROFILE%", buffer, sizeof(buffer));
+    ::snprintf(fname, sizeof(fname), "%s\\.%s\\", buffer, GAMENAME);
+
+#elif defined(__linux__)
+
+    const char* xdgPath = ::getenv("XDG_CONFIG_HOME");
+    if (xdgPath != nullptr)
+    {
+        ::snprintf(fname, sizeof(fname), "%s/%s/%s", xdgPath, GAMENAME, f);
     }
+    else
+    {
+        ::snprintf(fname, sizeof(fname), "%s/.config/%s/%s", ::getenv("HOME"), GAMENAME, f);
+    }
+
+#else
+
+    ::snprintf(fname, sizeof(fname), "%s/Library/Application Support/%s/", ::getenv("HOME"), GAMENAME);
+
 #endif
 
-    // should not be reached
-    return nullptr;
+#if defined(_WIN32)
+    CreateDirectory(fname, 0);
+#else
+    ::mkdir(fname, 0700);
+#endif
+
+    return ::fopen(fname, m);
 }
