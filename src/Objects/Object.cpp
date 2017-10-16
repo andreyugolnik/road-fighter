@@ -35,15 +35,12 @@ CObject::CObject(int nx, int ny, CTile* t, int cons, CGame* g)
 
 CObject::~CObject(void)
 {
-    int i;
-
-    for (i = 0; i < ntiles; i++)
+    for (int i = 0; i < ntiles; i++)
         tiles[i] = nullptr;
     delete[] tiles;
-
 }
 
-bool CObject::cycle(unsigned char* keyboard, unsigned char* old_keyboard)
+bool CObject::cycle(unsigned char* /*keyboard*/, unsigned char* /*old_keyboard*/)
 {
     return true;
 }
@@ -53,38 +50,39 @@ void CObject::draw(int sx, int sy, SDL_Surface* screen)
     draw_x = x;
     draw_y = y;
     if (tile >= 0 && tile < ntiles)
+    {
         tiles[tile]->draw(x - sx, y - sy, screen);
+    }
 }
 
 bool CObject::collision(int offsx, int offsy, CObject* o)
 {
-    CTile *t1 = 0, *t2 = 0;
+    CTile* t1 = nullptr;
+    CTile* t2 = nullptr;
 
     if (tile >= 0 && tile < ntiles)
         t1 = tiles[tile];
     if (o->tile >= 0 && o->tile < o->ntiles)
         t2 = o->tiles[o->tile];
 
-    if (t1 == 0 || t2 == 0)
+    if (t1 == nullptr || t2 == nullptr)
         return false;
-    if (t1->collision_data == 0 || t2->collision_data == 0)
+    if (t1->collision_data == nullptr || t2->collision_data == nullptr)
         return false;
 
     if (draw_y + t1->get_dy() < o->draw_y + offsy || o->draw_y + offsy + t2->get_dy() < draw_y)
         return false;
 
     {
-        int tmpx, tmpy;
-
-        tmpx = int((o->draw_x + offsx) - draw_x);
-        tmpy = int((o->draw_y + offsy) - draw_y);
+        int tmpx = int((o->draw_x + offsx) - draw_x);
+        int tmpy = int((o->draw_y + offsy) - draw_y);
 
         if (sge_cmcheck(t1->collision_data, 0, 0, t2->collision_data, tmpx, tmpy))
         {
             tmpx = sge_get_cx();
             tmpy = sge_get_cy();
             return true;
-        } /* if */
+        }
     }
 
     return false;

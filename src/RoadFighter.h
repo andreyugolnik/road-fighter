@@ -3,7 +3,6 @@
 #include "Sound.h"
 
 #include <SDL/SDL.h>
-#include <SDL/SDL_ttf.h>
 #include <cstdio>
 
 #define QUIT_STATE -1
@@ -20,6 +19,10 @@
 
 class CGame;
 class CTile;
+
+struct Mix_Chunk;
+struct _TTF_Font;
+typedef struct _TTF_Font TTF_Font;
 
 class CRoadFighter final
 {
@@ -67,21 +70,35 @@ private:
     int left2_key, right2_key, fire2_key;
 
     /* Graphic data: */
-    SDL_Surface *disclaimer_sfc, *retroremakes_sfc;
-    SDL_Surface *konami1_sfc, *konami2_sfc;
+    SDL_Surface* disclaimer_sfc;
+    SDL_Surface* retroremakes_sfc;
+    SDL_Surface* konami1_sfc;
+    SDL_Surface* konami2_sfc;
     SDL_Surface* tittle_sfc;
     SDL_Surface* arrow_sfc;
-    SDL_Surface *scoreboard_sfc, *scoreboard2_sfc, *scoreboardleft_sfc;
+    SDL_Surface* scoreboard_sfc;
+    SDL_Surface* scoreboard2_sfc;
+    SDL_Surface* scoreboardleft_sfc;
     SDL_Surface* gamemap_sfc;
-    SDL_Surface *minicar1_sfc, *minicar2_sfc;
+    SDL_Surface* minicar1_sfc;
+    SDL_Surface* minicar2_sfc;
     SDL_Surface* levelintro_sfc;
     SDL_Surface* gameover_sfc;
-    SDL_Surface *credits_sfc, *credits2_sfc;
-    CTile *minicar1_tile, *minicar2_tile;
+    SDL_Surface* credits_sfc;
+    SDL_Surface* credits2_sfc;
+    CTile* minicar1_tile;
+    CTile* minicar2_tile;
 
     /* Sound data: */
-    SOUNDT S_menu_move, S_menu_select, S_menu_in, S_menu_out;
-    //	SOUNDT M_menu,M_ingame,M_start,M_gameover,M_levelcomplete;
+    Mix_Chunk* S_menu_move;
+    Mix_Chunk* S_menu_select;
+    Mix_Chunk* S_menu_in;
+    Mix_Chunk* S_menu_out;
+    // Mix_Chunk* M_menu;
+    // Mix_Chunk* M_ingame;
+    // Mix_Chunk* M_start;
+    // Mix_Chunk* M_gameover;
+    // Mix_Chunk* M_levelcomplete;
 
     /* Individual state data: */
     int presentation_state;
@@ -118,10 +135,13 @@ private:
 
     bool playing_reachedend;
 
-    unsigned char *keyboard, old_keyboard[SDLK_LAST];
+    unsigned char* keyboard;
+    unsigned char old_keyboard[SDLK_LAST];
 
     TTF_Font* font1;
-    TTF_Font *font2big, *font2medium, *font2small;
+    TTF_Font* font2big;
+    TTF_Font* font2medium;
+    TTF_Font* font2small;
 
     /* REPLAYS: */
     FILE* replay_fp;

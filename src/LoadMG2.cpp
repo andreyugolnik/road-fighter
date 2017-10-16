@@ -1,78 +1,92 @@
+#include "Assets.h"
 #include "FileHandling.h"
 #include "Game.h"
-#include "Assets.h"
 #include "Objects/SemaphoreObject.h"
 
 #include <cstring>
 
 bool CGame::load_map(const char* mapname)
 {
-    FILE* fp;
-    int i, j, k, n;
-    int i_tmp;
-    int current_object;
-    int semaphore_object;
-    int semaphore_tiles[5][2];
-    List<TILE_SOURCE> l;
-    TILE_SOURCE* source;
-    char tmp[256];
-
-    fp = f1open(assets::makePath(mapname), "r", GAMEDATA);
-    if (fp == 0)
+    FILE* fp = f1open(assets::makePath(mapname), "r", GAMEDATA);
+    if (fp == nullptr)
+    {
         return false;
+    }
 
     /* Load map: */
+    int i_tmp;
+    List<TILE_SOURCE> l;
 
     /* Tile sources: */
-    if (2 != fscanf(fp, "%s %i", tmp, &n))
-        return false;
-    for (i = 0; i < n; i++)
+
+    int n = 0;
+    char tmp[256];
+    if (2 != fscanf(fp, "%s %d", tmp, &n))
     {
-        source = new TILE_SOURCE();
+        return false;
+    }
+
+    for (int i = 0; i < n; i++)
+    {
+        TILE_SOURCE* source = new TILE_SOURCE();
         source->load(fp);
         tile_sources.Add(source);
     }
 
     /* Tiles: */
-    for (j = 0; j < 256; j++)
+    for (int j = 0; j < 256; j++)
     {
-        if (2 != fscanf(fp, "%s %i", tmp, &n))
-            return false;
-        tiles[j].Delete();
-        for (i = 0; i < n; i++)
+        if (2 != fscanf(fp, "%s %d", tmp, &n))
         {
-            bool found = false;
-            int i1, i2, i3, i4, mask_type, collision_mask_type;
-            CTile* t;
+            return false;
+        }
 
+        tiles[j].Delete();
+        for (int i = 0; i < n; i++)
+        {
             if (1 != fscanf(fp, "%s", tmp))
+            {
                 return false;
-            if (6 != fscanf(fp, "%i %i %i %i %i %i", &i1, &i2, &i3, &i4, &mask_type, &collision_mask_type))
-                return false;
+            }
 
-            t = 0;
+            int i1, i2, i3, i4, mask_type, collision_mask_type;
+            if (6 != fscanf(fp, "%d %d %d %d %d %d", &i1, &i2, &i3, &i4, &mask_type, &collision_mask_type))
+            {
+                return false;
+            }
+
             l.Instance(tile_sources);
             l.Rewind();
-            while (!found && l.Iterate(source))
+
+            CTile* t = nullptr;
+            bool found = false;
+            TILE_SOURCE* source = nullptr;
+            while (found == false && l.Iterate(source))
             {
                 if (source->cmp(tmp))
                 {
                     found = true;
-                    t = new CTile(i1, i2, i3, i4, source->sfc, (collision_mask_type == 2 ? true : false));
+                    t = new CTile(i1, i2, i3, i4, source->sfc, collision_mask_type == 2);
                 }
             }
 
-            if (t != 0)
+            if (t != nullptr)
+            {
                 tiles[j].Add(t);
+            }
         }
     }
 
     /* Objects: */
-    if (2 != fscanf(fp, "%s %i", tmp, &n))
+    if (2 != fscanf(fp, "%s %d", tmp, &n))
+    {
         return false;
-    current_object = 0;
-    semaphore_object = 0;
-    for (i = 0; i < n; i++)
+    }
+
+    int current_object = 0;
+    int semaphore_object = 0;
+    int semaphore_tiles[5][2];
+    for (int i = 0; i < n; i++)
     {
         int tile_bank, tile_num;
         int nbitmaps, nlinks, nparts;
@@ -82,57 +96,71 @@ bool CGame::load_map(const char* mapname)
         if (strcmp(tmp, "\"semaphore\"") == 0)
             semaphore_object = current_object;
 
-        if (1 != fscanf(fp, "%i", &nbitmaps))
+        if (1 != fscanf(fp, "%d", &nbitmaps))
             return false;
-        for (j = 0; j < nbitmaps; j++)
+        for (int j = 0; j < nbitmaps; j++)
         {
-            if (3 != fscanf(fp, "%i %i %i", &tile_bank, &tile_num, &nlinks))
+            if (3 != fscanf(fp, "%d %d %d", &tile_bank, &tile_num, &nlinks))
+            {
                 return false;
+            }
+
             if (strcmp(tmp, "\"semaphore\"") == 0)
             {
                 semaphore_tiles[j][0] = tile_bank;
                 semaphore_tiles[j][1] = tile_num;
             }
-            for (k = 0; k < nlinks; k++)
-                if (2 != fscanf(fp, "%i %i", &i_tmp, &i_tmp))
+
+            for (int k = 0; k < nlinks; k++)
+            {
+                if (2 != fscanf(fp, "%d %d", &i_tmp, &i_tmp))
+                {
                     return false;
+                }
+            }
         }
-        if (1 != fscanf(fp, "%i", &nparts))
-            return false;
-        for (j = 0; j < nparts; j++)
+
+        if (1 != fscanf(fp, "%d", &nparts))
         {
-            if (5 != fscanf(fp, "%i %i %i %i %i", &i_tmp, &i_tmp, &i_tmp, &i_tmp, &i_tmp))
+            return false;
+        }
+
+        for (int j = 0; j < nparts; j++)
+        {
+            if (5 != fscanf(fp, "%d %d %d %d %d", &i_tmp, &i_tmp, &i_tmp, &i_tmp, &i_tmp))
+            {
                 return false;
+            }
         }
 
-        if (1 != fscanf(fp, "%i", &i_tmp))
+        if (1 != fscanf(fp, "%d", &i_tmp))
             return false;
-        if (1 != fscanf(fp, "%i", &i_tmp))
+        if (1 != fscanf(fp, "%d", &i_tmp))
             return false;
-        if (2 != fscanf(fp, "%i %i", &i_tmp, &i_tmp))
+        if (2 != fscanf(fp, "%d %d", &i_tmp, &i_tmp))
             return false;
 
-        for (i = 0; i < 23; i++)
+        for (int i = 0; i < 23; i++)
         {
-            for (j = 0; j < nparts; j++)
+            for (int j = 0; j < nparts; j++)
                 if (1 != fscanf(fp, "%s", tmp))
                     return false;
         }
 
-        if (5 != fscanf(fp, "%i %i %i %i %i", &i_tmp, &i_tmp, &i_tmp, &i_tmp, &i_tmp))
+        if (5 != fscanf(fp, "%d %d %d %d %d", &i_tmp, &i_tmp, &i_tmp, &i_tmp, &i_tmp))
             return false;
-        if (4 != fscanf(fp, "%i %i %i %i", &i_tmp, &i_tmp, &i_tmp, &i_tmp))
+        if (4 != fscanf(fp, "%d %d %d %d", &i_tmp, &i_tmp, &i_tmp, &i_tmp))
             return false;
-        if (1 != fscanf(fp, "%i", &i_tmp))
+        if (1 != fscanf(fp, "%d", &i_tmp))
             return false;
         if (i_tmp != 0)
             return false; /* No states should be defined!!! */
-        if (1 != fscanf(fp, "%i", &i_tmp))
+        if (1 != fscanf(fp, "%d", &i_tmp))
             return false;
         if (i_tmp != 0)
             return false; /* No condition states should be defined!!! */
 
-        if (4 != fscanf(fp, "%i %i %i %i", &i_tmp, &i_tmp, &i_tmp, &i_tmp))
+        if (4 != fscanf(fp, "%d %d %d %d", &i_tmp, &i_tmp, &i_tmp, &i_tmp))
             return false;
         if (1 != fscanf(fp, "%s ", tmp))
             return false;
@@ -140,76 +168,75 @@ bool CGame::load_map(const char* mapname)
         {
             fgets(tmp, 80, fp);
         }
-        if (2 != fscanf(fp, "%s %i", tmp, &i_tmp))
+        if (2 != fscanf(fp, "%s %d", tmp, &i_tmp))
             return false;
         if (i_tmp != 0)
             return false; /* No variables should be defined!!! */
-        if (10 != fscanf(fp, "%i %i %i %i %i %i %i %i %i %i", &i_tmp, &i_tmp, &i_tmp, &i_tmp, &i_tmp,
-                         &i_tmp, &i_tmp, &i_tmp, &i_tmp, &i_tmp))
+        if (10 != fscanf(fp, "%d %d %d %d %d %d %d %d %d %d", &i_tmp, &i_tmp, &i_tmp, &i_tmp, &i_tmp, &i_tmp, &i_tmp, &i_tmp, &i_tmp, &i_tmp))
             return false;
 
         current_object++;
     }
 
-    if (2 != fscanf(fp, "%s %i", tmp, &i_tmp))
+    if (2 != fscanf(fp, "%s %d", tmp, &i_tmp))
         return false;
     if (i_tmp != 0)
         return false; /* No game variables should be defined!!! */
 
-    if (2 != fscanf(fp, "%s %i", tmp, &i_tmp))
+    if (2 != fscanf(fp, "%s %d", tmp, &i_tmp))
         return false;
     if (i_tmp != 1)
         return false; /* Only one map should be defined!!! */
 
     if (2 != fscanf(fp, "%s %s", tmp, tmp))
         return false;
-    if (2 != fscanf(fp, "%s %i", tmp, &i_tmp))
+    if (2 != fscanf(fp, "%s %d", tmp, &i_tmp))
         return false;
     if (i_tmp != 0)
         return false; /* No map variables should be defined!!! */
 
-    if (2 != fscanf(fp, "%s %i", tmp, &i_tmp))
+    if (2 != fscanf(fp, "%s %d", tmp, &i_tmp))
         return false;
     if (i_tmp != 1)
         return false; /* Only one room should be defined!!! */
-    if (2 != fscanf(fp, "%s %i", tmp, &i_tmp))
+    if (2 != fscanf(fp, "%s %d", tmp, &i_tmp))
         return false;
     if (i_tmp != 0)
         return false; /* No room variables should be defined!!! */
 
-    if (3 != fscanf(fp, "%s %i %i", tmp, &i_tmp, &i_tmp))
+    if (3 != fscanf(fp, "%s %d %d", tmp, &i_tmp, &i_tmp))
         return false;
 
     /* Map: */
     {
         int x, y, tile_bank, tile_num;
 
-        if (3 != fscanf(fp, "%s %i %i", tmp, &dx, &dy))
+        if (3 != fscanf(fp, "%s %d %d", tmp, &dx, &dy))
             return false;
         dx *= 16;
         dy *= 16;
 
-        if (1 != fscanf(fp, "%i", &i_tmp))
+        if (1 != fscanf(fp, "%d", &i_tmp))
             return false;
 
         /* Background tiles: */
-        if (1 != fscanf(fp, "%i", &n))
+        if (1 != fscanf(fp, "%d", &n))
             return false;
-        for (i = 0; i < n; i++)
+        for (int i = 0; i < n; i++)
         {
-            if (4 != fscanf(fp, "%i %i %i %i", &x, &y, &tile_bank, &tile_num))
+            if (4 != fscanf(fp, "%d %d %d %d", &x, &y, &tile_bank, &tile_num))
                 return false;
             background.Add(new CObject(x, y, tiles[tile_bank][tile_num], CONSTITUTION_NONE, this));
         }
 
         /* Background objects: */
-        if (1 != fscanf(fp, "%i", &n))
+        if (1 != fscanf(fp, "%d", &n))
             return false;
-        for (i = 0; i < n; i++)
+        for (int i = 0; i < n; i++)
         {
-            if (3 != fscanf(fp, "%i %i %i", &x, &y, &i_tmp))
+            if (3 != fscanf(fp, "%d %d %d", &x, &y, &i_tmp))
                 return false;
-            if (1 != fscanf(fp, "%i", &i_tmp))
+            if (1 != fscanf(fp, "%d", &i_tmp))
                 return false;
             if (i_tmp != 0)
                 return false; /* No object variables should be defined!!! */
@@ -217,8 +244,7 @@ bool CGame::load_map(const char* mapname)
             if (i_tmp == semaphore_object)
             {
                 /* a semaphore: */
-                CObject* o;
-                o = new CSemaphoreObject(x, y, tiles[semaphore_tiles[0][0]][semaphore_tiles[0][1]],
+                CObject* o = new CSemaphoreObject(x, y, tiles[semaphore_tiles[0][0]][semaphore_tiles[0][1]],
                                          tiles[semaphore_tiles[1][0]][semaphore_tiles[1][1]],
                                          tiles[semaphore_tiles[2][0]][semaphore_tiles[2][1]],
                                          tiles[semaphore_tiles[3][0]][semaphore_tiles[3][1]],
@@ -229,23 +255,23 @@ bool CGame::load_map(const char* mapname)
         }
 
         /* Middleground tiles: */
-        if (1 != fscanf(fp, "%i", &n))
+        if (1 != fscanf(fp, "%d", &n))
             return false;
-        for (i = 0; i < n; i++)
+        for (int i = 0; i < n; i++)
         {
-            if (4 != fscanf(fp, "%i %i %i %i", &x, &y, &tile_bank, &tile_num))
+            if (4 != fscanf(fp, "%d %d %d %d", &x, &y, &tile_bank, &tile_num))
                 return false;
             middleground.Add(new CObject(x, y, tiles[tile_bank][tile_num], CONSTITUTION_NONE, this));
         }
 
         /* Middleground objects: */
-        if (1 != fscanf(fp, "%i", &n))
+        if (1 != fscanf(fp, "%d", &n))
             return false;
-        for (i = 0; i < n; i++)
+        for (int i = 0; i < n; i++)
         {
-            if (3 != fscanf(fp, "%i %i %i", &x, &y, &i_tmp))
+            if (3 != fscanf(fp, "%d %d %d", &x, &y, &i_tmp))
                 return false;
-            if (1 != fscanf(fp, "%i", &i_tmp))
+            if (1 != fscanf(fp, "%d", &i_tmp))
                 return false;
             if (i_tmp != 0)
                 return false; /* No object variables should be defined!!! */
@@ -253,8 +279,7 @@ bool CGame::load_map(const char* mapname)
             if (i_tmp == semaphore_object)
             {
                 /* a semaphore: */
-                CObject* o;
-                o = new CSemaphoreObject(x, y, tiles[semaphore_tiles[0][0]][semaphore_tiles[0][1]],
+                CObject* o = new CSemaphoreObject(x, y, tiles[semaphore_tiles[0][0]][semaphore_tiles[0][1]],
                                          tiles[semaphore_tiles[1][0]][semaphore_tiles[1][1]],
                                          tiles[semaphore_tiles[2][0]][semaphore_tiles[2][1]],
                                          tiles[semaphore_tiles[3][0]][semaphore_tiles[3][1]],
@@ -265,23 +290,23 @@ bool CGame::load_map(const char* mapname)
         }
 
         /* Foreground tiles: */
-        if (1 != fscanf(fp, "%i", &n))
+        if (1 != fscanf(fp, "%d", &n))
             return false;
-        for (i = 0; i < n; i++)
+        for (int i = 0; i < n; i++)
         {
-            if (4 != fscanf(fp, "%i %i %i %i", &x, &y, &tile_bank, &tile_num))
+            if (4 != fscanf(fp, "%d %d %d %d", &x, &y, &tile_bank, &tile_num))
                 return false;
             foreground.Add(new CObject(x, y, tiles[tile_bank][tile_num], CONSTITUTION_NONE, this));
         }
 
         /* Foreground objects: */
-        if (1 != fscanf(fp, "%i", &n))
+        if (1 != fscanf(fp, "%d", &n))
             return false;
-        for (i = 0; i < n; i++)
+        for (int i = 0; i < n; i++)
         {
-            if (3 != fscanf(fp, "%i %i %i", &x, &y, &i_tmp))
+            if (3 != fscanf(fp, "%d %d %d", &x, &y, &i_tmp))
                 return false;
-            if (1 != fscanf(fp, "%i", &i_tmp))
+            if (1 != fscanf(fp, "%d", &i_tmp))
                 return false;
             if (i_tmp != 0)
                 return false; /* No object variables should be defined!!! */
@@ -289,8 +314,7 @@ bool CGame::load_map(const char* mapname)
             if (i_tmp == semaphore_object)
             {
                 /* a semaphore: */
-                CObject* o;
-                o = new CSemaphoreObject(x, y, tiles[semaphore_tiles[0][0]][semaphore_tiles[0][1]],
+                CObject* o = new CSemaphoreObject(x, y, tiles[semaphore_tiles[0][0]][semaphore_tiles[0][1]],
                                          tiles[semaphore_tiles[1][0]][semaphore_tiles[1][1]],
                                          tiles[semaphore_tiles[2][0]][semaphore_tiles[2][1]],
                                          tiles[semaphore_tiles[3][0]][semaphore_tiles[3][1]],

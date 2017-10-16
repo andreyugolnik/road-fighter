@@ -122,30 +122,20 @@ public:
 
     ~List()
     {
-        if (original)
-        {
-            T* o;
-            while (!EmptyP())
-            {
-                o = ExtractIni();
-                delete o;
-            }
-            delete list;
-        }
+        Delete();
     }
 
     void Delete()
     {
         if (original)
         {
-            T* o;
             while (!EmptyP())
             {
-                o = ExtractIni();
-                delete o;
+                delete ExtractIni();
             }
             delete list;
         }
+
         list = 0;
         act = 0;
         top = 0;

@@ -9,6 +9,7 @@
 #include "Objects/PlayerCarObject.h"
 #include "Sound.h"
 
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <cstdlib>
@@ -17,7 +18,9 @@
 #include <SDL_image.h>
 #include <SDL_mixer.h>
 
+extern int SCREEN_Y;
 extern int MAX_SPEED;
+
 int PLAYING_WINDOW = 384 + 64;
 int CAR_APPEARING_OFFSET = 384 + 32;
 
@@ -153,7 +156,7 @@ void CGame::init_game(const char* mapname)
     extra_tiles.Add(new CTile(0, 0, pause_sfc->w / 2, pause_sfc->h, pause_sfc, false)); /* 9 */
 
     extra_tiles.Add(new CTile(0, 0, checkpoint_sfc->w / 2, checkpoint_sfc->h, checkpoint_sfc, false)); /* 10 */
-    extra_tiles.Add(new CTile(0, 0, goal_sfc->w / 2, goal_sfc->h, goal_sfc, false));                   /* 11 */
+    extra_tiles.Add(new CTile(0, 0, goal_sfc->w / 2, goal_sfc->h, goal_sfc, false)); /* 11 */
 
     explosion_tiles.Add(new CTile(0, 0, 64, 64, explosion_sfc, false));
     explosion_tiles.Add(new CTile(0, 64, 64, 64, explosion_sfc, false));
@@ -646,32 +649,38 @@ void CGame::draw(SDL_Surface* sfc, SDL_Rect vp)
 {
     if (focusing_objects.Length() > 0)
     {
-        SDL_Rect vp2;
-        int dx;
+        int dx = vp.w / focusing_objects.Length();
+        SDL_Rect vp2{
+            (Sint16)(vp.x + (focusing_objects.Length() - 1) * dx),
+            vp.y,
+            (Uint16)(focusing_objects.Length() > 1 ? (dx - 1) : dx),
+            vp.h
+        };
+
+        CObject* o = nullptr;
         List<CObject> l;
-        CObject* o;
-        List<float> l2;
-        List<int> l3;
-        float* fy;
-        int* cp_delay;
-
-        dx = vp.w / focusing_objects.Length();
-        vp2.x = vp.x + (focusing_objects.Length() - 1) * dx;
-        vp2.y = vp.y;
-        if (focusing_objects.Length() > 1)
-            vp2.w = dx - 1;
-        else
-            vp2.w = dx;
-        vp2.h = vp.h;
-
         l.Instance(focusing_objects);
-        l2.Instance(focusing_fy);
-        l3.Instance(checkpoint_delay);
         l.Rewind();
+
+        float* fy = nullptr;
+        List<float> l2;
+        l2.Instance(focusing_fy);
         l2.Rewind();
+
+        int* cp_delay = nullptr;
+        List<int> l3;
+        l3.Instance(checkpoint_delay);
         l3.Rewind();
-        while (l.Iterate(o) && l2.Iterate(fy) && l3.Iterate(cp_delay))
+
+        while (1)
         {
+            bool a0 = l.Iterate(o);
+            bool a1 = l2.Iterate(fy);
+            bool a2 = l3.Iterate(cp_delay);
+            if (a0 == false || a1 == false || a2 == false)
+            {
+                break;
+            }
             /* draw a viewport: */
             draw(sfc, vp2, (CCarObject*)o, fy, cp_delay);
             vp2.x -= dx;
@@ -679,13 +688,11 @@ void CGame::draw(SDL_Surface* sfc, SDL_Rect vp)
     }
 
     {
-        float f = float(game_timmer) / float(fade_time);
-        if (f < 0)
-            f = 0;
-        if (f >= 1.0)
-            f = 1.0;
+        float f = std::min<float>(std::max<float>(0.0f, float(game_timmer) / float(fade_time)), 1.0f);
         if (f < 1.0)
+        {
             surface_fader(sfc, f, f, f, &vp);
+        }
     }
 
     if (paused)
@@ -697,20 +704,16 @@ void CGame::draw(SDL_Surface* sfc, SDL_Rect vp)
 
 void CGame::draw(SDL_Surface* sfc, SDL_Rect logic_vp, CCarObject* focusing, float* fy, int* cp_delay)
 {
-    List<CObject> l;
-    CObject* o;
-    int sx, sy;
-    float f = 0.0;
     SDL_Rect vp = logic_vp;
 
     {
-        f = float(-focusing->get_y_speed()) / MAX_SPEED;
+        float f = float(-focusing->get_y_speed()) / MAX_SPEED;
         f = 0.66F + (0.85F - 0.66F) * f;
         *fy = (2 * (*fy) + f) / 3;
     }
 
-    sx = focusing->get_x() - vp.w / 2;
-    sy = int(focusing->get_y() - vp.h * (*fy));
+    int sx = focusing->get_x() - vp.w / 2;
+    int sy = int(focusing->get_y() - vp.h * (*fy));
     if (sx + vp.w > dx)
         sx = dx - vp.w;
     if (sy + vp.h > dy)
@@ -735,83 +738,111 @@ void CGame::draw(SDL_Surface* sfc, SDL_Rect logic_vp, CCarObject* focusing, floa
         List<CTile> l;
         CTile* t;
 
+        SDL_Surface* tmp = SDL_CreateRGBSurface(0, 128, 96, 32, 0, 0, 0, 0);
         l.Instance(tiles[3]);
         l.Rewind();
         while (l.Iterate(t))
         {
             if (t->r.x == 0 && t->r.y == 0 && t->r.w == 128 && t->r.h == 96)
             {
-                SDL_Surface* tmp = SDL_CreateRGBSurface(0, 128, 96, 32, 0, 0, 0, 0);
-                SDL_Rect r1, r2;
-                r1.x = 0;
-                r1.y = 0;
-                r1.w = 128;
-                r1.h = 96;
-                r2.x = 0;
-                r2.y = 0;
-                r2.w = 128;
-                r2.h = 96;
+                SDL_Rect r1{ 0, 0, 128, 96 };
+                SDL_Rect r2{ 0, 0, 128, 96 };
                 SDL_BlitSurface(t->orig, &r1, tmp, &r2);
+
                 r1.x = 1;
                 r1.w = 127;
                 SDL_BlitSurface(tmp, &r1, t->orig, &r2);
+
                 r1.x = 0;
                 r1.w = 1;
                 r2.x = 127;
                 SDL_BlitSurface(tmp, &r1, t->orig, &r2);
-                SDL_FreeSurface(tmp);
             }
         }
+        SDL_FreeSurface(tmp);
     }
 
     {
-        int i;
-        int min = 0, max = 0;
+        CObject* o = nullptr;
+        List<CObject> l;
+
+        int min = 0;
+        int max = 0;
 
         get_quick_min_max(sy + vp.y, sy + vp.y + vp.h, &min, &max);
 
-        for (i = min; i <= max; i++)
+        for (int i = min; i <= max; i++)
         {
             l.Instance(quick_background[i]);
             l.Rewind();
             while (l.Iterate(o))
+            {
                 o->draw(sx, sy, sfc);
+            }
         }
 
-        for (i = min; i <= max; i++)
+        for (int i = min; i <= max; i++)
         {
             l.Instance(quick_middleground[i]);
             l.Rewind();
             while (l.Iterate(o))
+            {
                 o->draw(sx, sy, sfc);
+            }
         }
 
         /* TYRE MARKS: */
         if (game_remake_extras)
         {
             List<CTyreMark> l;
-            CTyreMark* r;
-
             l.Instance(tyre_marks);
             l.Rewind();
-            while (l.Iterate(r))
+
+            if (l.EndP() == false)
             {
-                draw_line(sfc, r->x - sx, r->y - sy, r->x2 - sx, r->y2 - sy, 0);
-                draw_line(sfc, r->x + 1 - sx, r->y - sy, r->x2 + 1 - sx, r->y2 - sy, 0);
+                bool cleanup = true;
+
+                SDL_LockSurface(sfc);
+
+                CTyreMark* r;
+                while (l.Iterate(r))
+                {
+                    int y1 = r->y - sy;
+                    int y2 = r->y2 - sy;
+                    if ((y1 >= 0 && y1 < SCREEN_Y) || (y2 >= 0 && y2 < SCREEN_Y))
+                    {
+                        cleanup = false;
+                        int x1 = r->x - sx;
+                        int x2 = r->x2 - sx;
+                        draw_line_locked(sfc, x1, y1, x2, y2, 0);
+                        draw_line_locked(sfc, x1 + 1, y1, x2 + 1, y2, 0);
+                    }
+                }
+
+                SDL_UnlockSurface(sfc);
+
+                if (cleanup)
+                {
+                    tyre_marks.Delete();
+                }
             }
         }
 
         l.Instance(objects);
         l.Rewind();
         while (l.Iterate(o))
+        {
             o->draw(sx, sy, sfc);
+        }
 
-        for (i = min; i <= max; i++)
+        for (int i = min; i <= max; i++)
         {
             l.Instance(quick_foreground[i]);
             l.Rewind();
             while (l.Iterate(o))
+            {
                 o->draw(sx, sy, sfc);
+            }
         }
     }
 
@@ -824,30 +855,14 @@ void CGame::draw(SDL_Surface* sfc, SDL_Rect logic_vp, CCarObject* focusing, floa
 
     if ((*cp_delay) >= 0)
     {
-        int i;
-        int x1, x2;
-        CTile* tile = 0;
-
-        if (current_level == 6)
-            tile = extra_tiles[11];
-        else
-            tile = extra_tiles[10];
+        CTile* tile = extra_tiles[current_level == 6 ? 11 : 10];
 
         if (vp.w >= tile->get_dx())
         {
-            int amp;
-            int offs;
+            int amp = std::min<int>(128, std::max<int>(0, *cp_delay));
+            amp = std::max<int>(0, (128 - amp) * (128 - amp) / 128);
 
-            amp = *cp_delay;
-            if (amp < 0)
-                amp = 0;
-            if (amp > 128)
-                amp = 128;
-            amp = int((128 - amp) * (128 - amp) / 128);
-            if (amp < 0)
-                amp = 0;
-
-            offs = int(cos(float((*cp_delay) * (*cp_delay)) / 500.0) * amp);
+            int offs = int(cosf(float((*cp_delay) * (*cp_delay)) / 500.0) * amp);
             if (offs < 0)
                 offs = -offs;
 
@@ -855,9 +870,9 @@ void CGame::draw(SDL_Surface* sfc, SDL_Rect logic_vp, CCarObject* focusing, floa
         }
         else
         {
-            x1 = -tile->get_dx();
-            x2 = (vp.w - tile->get_dx()) / 2;
-            i = *cp_delay;
+            int x1 = -tile->get_dx();
+            int x2 = (vp.w - tile->get_dx()) / 2;
+            int i = *cp_delay;
 
             tile->draw(vp.x + x1 + ((x2 - x1) / 32) * i, vp.y + 32, sfc);
         }
@@ -873,12 +888,11 @@ CObject* CGame::object_collision(int xoffs, int yoffs, CObject* o, int constitut
 
     if ((constitution & CONSTITUTION_SOLID) != 0)
     {
-        int i;
         int min = 0, max = 0;
 
         get_quick_min_max(o, yoffs, &min, &max);
 
-        for (i = min; i <= max; i++)
+        for (int i = min; i <= max; i++)
         {
             l.Instance(quick_background[i]);
             l.Rewind();

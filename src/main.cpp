@@ -38,10 +38,11 @@ bool fullscreen = false;
 bool quit = false;
 int time = 0;
 int init_time = 0;
-SDL_Surface* screen_sfc;
-CRoadFighter* game = 0;
-int screen_flags = /* SDL_GLSDL | SDL_DOUBLEBUF | */
-    /* SDL_HWSURFACE | SDL_DOUBLEBUF | */
+SDL_Surface* screen_sfc = nullptr;
+CRoadFighter* game = nullptr;
+int screen_flags =
+    // SDL_GLSDL | SDL_DOUBLEBUF |
+    // SDL_HWSURFACE | SDL_DOUBLEBUF |
     0;
 
 int start_level = 1;
@@ -50,39 +51,41 @@ int start_level = 1;
 
 SDL_Surface* initializeSDL(int moreflags)
 {
-    char VideoName[256];
-    SDL_Surface* screen;
+    output_debug_message("Initializing SDL video subsystem.\n");
 
     //int flags = SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_HWPALETTE;
     int flags = screen_flags | moreflags;
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
-        return 0;
-
-    output_debug_message("Initializing SDL video subsystem.\n");
-    if ((SDL_Init(SDL_INIT_VIDEO)) == -1)
     {
         output_debug_message("Couldn't initialize video subsystem: %s\n", SDL_GetError());
-        exit(-1);
+        return nullptr;
     }
-    SDL_VideoDriverName(VideoName, sizeof(VideoName));
-    output_debug_message("SDL driver used: %s\n", VideoName);
-    // Set the environment variable SDL_VIDEODRIVER to override
-    // For Linux: x11 (default), dga, fbcon, directfb, svgalib,
-    //            ggi, aalib
-    // For Windows: directx (default), windib
+
+    char VideoName[256];
+    if (SDL_VideoDriverName(VideoName, sizeof(VideoName)) != nullptr)
+    {
+        output_debug_message("SDL driver used: %s\n", VideoName);
+        // // Set the environment variable SDL_VIDEODRIVER to override
+        // // For Linux: x11 (default), dga, fbcon, directfb, svgalib,
+        // //            ggi, aalib
+        // // For Windows: directx (default), windib
+    }
     output_debug_message("SDL video subsystem initialized.\n");
 
     atexit(SDL_Quit);
+
     SDL_WM_SetCaption(application_name, 0);
     if (fullscreen)
+    {
         SDL_ShowCursor(SDL_DISABLE);
+    }
+
     Sound_initialization();
 
     pause(1000);
 
-    screen = SDL_SetVideoMode(SCREEN_X, SCREEN_Y, COLOUR_DEPTH, flags);
-
-    if (screen == NULL)
+    SDL_Surface* screen = SDL_SetVideoMode(SCREEN_X, SCREEN_Y, COLOUR_DEPTH, flags);
+    if (screen == nullptr)
     {
         output_debug_message("Couldn't set %ix%ix%i", SCREEN_X, SCREEN_Y, COLOUR_DEPTH);
         if (fullscreen)
@@ -287,8 +290,10 @@ int main(int argc, char** argv)
     init_time = time;
 
     screen_sfc = initializeSDL((fullscreen ? SDL_FULLSCREEN : 0));
-    if (screen_sfc == 0)
+    if (screen_sfc == nullptr)
+    {
         return 0;
+    }
 
     game = new CRoadFighter();
 

@@ -2,6 +2,7 @@
 #include "RoadFighter.h"
 #include "Game.h"
 
+#include <SDL/SDL_mixer.h>
 #include <ctime>
 
 bool record_replay = false;
@@ -15,9 +16,8 @@ int CRoadFighter::playing_cycle(void)
     {
         if (record_replay)
         {
-            unsigned int seed;
             replay_fp = f1open("replay.txt", "w+", USERDATA);
-            seed = (unsigned int)time(NULL);
+            unsigned int seed = (unsigned int)time(NULL);
             fprintf(replay_fp, "%u\n", seed);
             srand(seed);
         }
@@ -25,8 +25,8 @@ int CRoadFighter::playing_cycle(void)
         {
             if (load_replay)
             {
-                unsigned int seed;
                 replay_fp = f1open("replay.txt", "r+", USERDATA);
+                unsigned int seed;
                 fscanf(replay_fp, "%u", &seed);
                 srand(seed);
             }
@@ -35,8 +35,7 @@ int CRoadFighter::playing_cycle(void)
 
     if (record_replay)
     {
-        int i;
-        for (i = 0; i < SDLK_LAST; i++)
+        for (int i = 0; i < SDLK_LAST; i++)
         {
             if (keyboard[i] && !old_keyboard[i])
                 fprintf(replay_fp, "1 %i\n", i);

@@ -15,6 +15,8 @@
 class CCarObject;
 class CObject;
 
+struct Mix_Chunk;
+
 class CTyreMark
 {
 public:
@@ -116,9 +118,16 @@ private:
     TTF_Font* font;
 
     /* Sound data: */
-    SOUNDT S_takefuel, S_redlight, S_greenlight, S_crash, S_water;
-    SOUNDT S_carstart, S_fuelempty, S_caradvance, S_collision;
-    SOUNDT S_truck;
+    Mix_Chunk* S_takefuel;
+    Mix_Chunk* S_redlight;
+    Mix_Chunk* S_greenlight;
+    Mix_Chunk* S_crash;
+    Mix_Chunk* S_water;
+    Mix_Chunk* S_carstart;
+    Mix_Chunk* S_fuelempty;
+    Mix_Chunk* S_caradvance;
+    Mix_Chunk* S_collision;
+    Mix_Chunk* S_truck;
     Mix_Chunk* S_carengine;
     Mix_Chunk* S_carskid;
 

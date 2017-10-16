@@ -28,46 +28,60 @@ bool Sound_initialization()
 
 int Sound_initialization(int nc, int nrc)
 {
-    char SoundcardName[256];
-    int audio_rate = 44100;
-    int audio_channels = 2;
-    int audio_bufsize = AUDIO_BUFFER;
-    Uint16 audio_format = AUDIO_S16;
-    // SDL_version compile_version;
-    n_channels = 8;
+    sound_enabled = false;
 
-    sound_enabled = true;
-    output_debug_message("Initializing SDL_mixer.\n");
-    if (Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_bufsize))
+    const int flags = MIX_INIT_OGG;
+    if (Mix_Init(flags) & flags)
     {
-        sound_enabled = false;
-        output_debug_message("Unable to open audio: %s\n", Mix_GetError());
-        output_debug_message("Running the game without audio.\n");
-        return -1;
+        int audio_rate = MIX_DEFAULT_FREQUENCY;
+        Uint16 audio_format = MIX_DEFAULT_FORMAT;
+        int audio_channels = MIX_DEFAULT_CHANNELS;
+        int audio_bufsize = AUDIO_BUFFER;
+        n_channels = 8;
+
+        output_debug_message("Initializing SDL_mixer.\n");
+        if (Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_bufsize) == 0)
+        {
+            char SoundcardName[256];
+            SDL_AudioDriverName(SoundcardName, sizeof(SoundcardName));
+
+#if !defined(__EMSCRIPTEN__)
+            Mix_QuerySpec(&audio_rate, &audio_format, &audio_channels);
+            output_debug_message("    opened %s at %d Hz %d bit %s, %d bytes audio buffer\n",
+                                 SoundcardName, audio_rate, audio_format & 0xFF,
+                                 audio_channels > 1 ? "stereo" : "mono", audio_bufsize);
+
+            output_debug_message("    running with SDL_mixer version: %d.%d.%d\n",
+                                 Mix_Linked_Version()->major,
+                                 Mix_Linked_Version()->minor,
+                                 Mix_Linked_Version()->patch);
+#endif
+
+            SDL_version compile_version;
+            MIX_VERSION(&compile_version);
+            output_debug_message("    compiled with SDL_mixer version: %d.%d.%d\n",
+                                 compile_version.major,
+                                 compile_version.minor,
+                                 compile_version.patch);
+
+            if (nc > 0)
+                n_channels = Mix_AllocateChannels(nc);
+            if (nrc > 0)
+                Mix_ReserveChannels(nrc);
+
+            sound_enabled = true;
+
+            return n_channels;
+        }
     }
 
-    SDL_AudioDriverName(SoundcardName, sizeof(SoundcardName));
-    // Mix_QuerySpec(&audio_rate, &audio_format, &audio_channels);
-    // output_debug_message("    opened %s at %d Hz %d bit %s, %d bytes audio buffer\n",
-                         // SoundcardName, audio_rate, audio_format & 0xFF,
-                         // audio_channels > 1 ? "stereo" : "mono", audio_bufsize);
+    if (sound_enabled == false)
+    {
+        output_debug_message("Unable to open audio: %s\n", Mix_GetError());
+        output_debug_message("Running the game without audio.\n");
+    }
 
-    // MIX_VERSION(&compile_version);
-    // output_debug_message("    compiled with SDL_mixer version: %d.%d.%d\n",
-                         // compile_version.major,
-                         // compile_version.minor,
-                         // compile_version.patch);
-    // output_debug_message("    running with SDL_mixer version: %d.%d.%d\n",
-                         // Mix_Linked_Version()->major,
-                         // Mix_Linked_Version()->minor,
-                         // Mix_Linked_Version()->patch);
-
-    if (nc > 0)
-        n_channels = Mix_AllocateChannels(nc);
-    if (nrc > 0)
-        Mix_ReserveChannels(nrc);
-
-    return n_channels;
+    return -1;
 }
 
 void Sound_release()
@@ -120,18 +134,18 @@ int Resume_playback(int nc, int nrc)
     SDL_AudioDriverName(SoundcardName, sizeof(SoundcardName));
     // Mix_QuerySpec(&audio_rate, &audio_format, &audio_channels);
     // output_debug_message("    opened %s at %d Hz %d bit %s, %d bytes audio buffer\n",
-                         // SoundcardName, audio_rate, audio_format & 0xFF,
-                         // audio_channels > 1 ? "stereo" : "mono", audio_bufsize);
+    // SoundcardName, audio_rate, audio_format & 0xFF,
+    // audio_channels > 1 ? "stereo" : "mono", audio_bufsize);
 
     // MIX_VERSION(&compile_version);
     // output_debug_message("    compiled with SDL_mixer version: %d.%d.%d\n",
-                         // compile_version.major,
-                         // compile_version.minor,
-                         // compile_version.patch);
+    // compile_version.major,
+    // compile_version.minor,
+    // compile_version.patch);
     // output_debug_message("    running with SDL_mixer version: %d.%d.%d\n",
-                         // Mix_Linked_Version()->major,
-                         // Mix_Linked_Version()->minor,
-                         // Mix_Linked_Version()->patch);
+    // Mix_Linked_Version()->major,
+    // Mix_Linked_Version()->minor,
+    // Mix_Linked_Version()->patch);
 
     if (nc > 0)
         n_channels = Mix_AllocateChannels(nc);
@@ -143,7 +157,7 @@ int Resume_playback(int nc, int nrc)
     return n_channels;
 }
 
-SOUNDT Sound_create_sound(const char* file)
+Mix_Chunk* Sound_create_sound(const char* file)
 {
     const char* ext[] = { "ogg", "wav" };
     char name[256];
@@ -166,20 +180,20 @@ SOUNDT Sound_create_sound(const char* file)
     return nullptr;
 }
 
-void Sound_delete_sound(SOUNDT s)
+void Sound_delete_sound(Mix_Chunk* s)
 {
     if (sound_enabled)
         Mix_FreeChunk(s);
 }
 
-int Sound_play(SOUNDT s)
+int Sound_play(Mix_Chunk* s)
 {
     if (sound_enabled)
         return Mix_PlayChannel(-1, s, 0);
     return -1;
 }
 
-int Sound_play(SOUNDT s, int volume)
+int Sound_play(Mix_Chunk* s, int volume)
 {
     if (sound_enabled)
     {
@@ -191,14 +205,14 @@ int Sound_play(SOUNDT s, int volume)
     return -1;
 }
 
-int Sound_play_continuous(SOUNDT s)
+int Sound_play_continuous(Mix_Chunk* s)
 {
     if (sound_enabled)
         return Mix_PlayChannel(-1, s, -1);
     return -1;
 }
 
-int Sound_play_continuous(SOUNDT s, int volume)
+int Sound_play_continuous(Mix_Chunk* s, int volume)
 {
     if (sound_enabled)
     {
@@ -209,13 +223,13 @@ int Sound_play_continuous(SOUNDT s, int volume)
     return -1;
 }
 
-void Sound_play_ch(SOUNDT s, int ch)
+void Sound_play_ch(Mix_Chunk* s, int ch)
 {
     if (sound_enabled && ch < n_channels)
         Mix_PlayChannel(ch, s, 0);
 }
 
-void Sound_play_ch(SOUNDT s, int ch, int volume)
+void Sound_play_ch(Mix_Chunk* s, int ch, int volume)
 {
     //#ifdef __DEBUG_MESSAGES
     //	output_debug_message("Playing %p in %i at %i...",(void *)s,ch,volume);
