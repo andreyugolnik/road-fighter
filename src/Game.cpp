@@ -291,8 +291,7 @@ CGame::~CGame()
     while (!focusing_objects.EmptyP())
         focusing_objects.ExtractIni();
 
-    while (Mix_Playing(-1) != 0)
-        ;
+    // while (Mix_Playing(-1) != 0) ;
 
     Sound_delete_sound(S_takefuel);
     Sound_delete_sound(S_redlight);
