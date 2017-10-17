@@ -24,8 +24,6 @@ extern int SCREEN_Y;
 
 CRoadFighter::CRoadFighter()
 {
-    int i;
-
     output_debug_message("CRoadFighter: in constructor...\n");
 
     state = PRESENTATION_STATE;
@@ -57,8 +55,10 @@ CRoadFighter::CRoadFighter()
     scoreboard_x = -1;
     desired_scoreboard_x = SCREEN_X;
 
-    for (i = 0; i < SDLK_LAST; i++)
+    for (int i = 0; i < SDLK_LAST; i++)
+    {
         old_keyboard[i] = 0;
+    }
 
     font1 = loadFont("fonts/comicbd.ttf", 16);
     font2big = loadFont("fonts/tanglewo.ttf", FONT_SIZE);
@@ -128,7 +128,7 @@ CRoadFighter::CRoadFighter()
     output_debug_message("CRoadFighter: constructor done.\n");
 }
 
-CRoadFighter::~CRoadFighter(void)
+CRoadFighter::~CRoadFighter()
 {
     output_debug_message("CRoadFighter: in destructor...\n");
 
@@ -159,7 +159,6 @@ CRoadFighter::~CRoadFighter(void)
     TTF_CloseFont(font2small);
 
     delete game;
-    game = 0;
 
     Sound_delete_sound(S_menu_move);
     Sound_delete_sound(S_menu_select);
@@ -168,7 +167,6 @@ CRoadFighter::~CRoadFighter(void)
 
     if (replay_fp != 0)
         fclose(replay_fp);
-    replay_fp = 0;
 
     output_debug_message("CRoadFighter: destructor done.\n");
 }
