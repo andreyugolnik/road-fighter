@@ -52,22 +52,23 @@ void CTile::draw(int x, int y, SDL_Surface* dest)
         // Emscripten SDL has bug with negative x and y,
         // so I fix input and output rects.
 
-        SDL_Rect d{
-            (Sint16)(x >= 0 ? x : 0),
-            (Sint16)(y >= 0 ? y : 0),
-            (Uint16)(x >= 0 ? r.w : (r.w + x)),
-            (Uint16)(y >= 0 ? r.h : (r.h + y))
-        };
-
         if (x >= 0 && y >= 0)
         {
+            SDL_Rect d{ (Sint16)x, (Sint16)y, r.w, r.h };
             SDL_BlitSurface(orig, nullptr, dest, &d);
         }
         else
         {
+            SDL_Rect d{
+                (Sint16)(x >= 0 ? x : 0),
+                (Sint16)(y >= 0 ? y : 0),
+                (Uint16)(x >= 0 ? r.w : (r.w + x)),
+                (Uint16)(y >= 0 ? r.h : (r.h + y))
+            };
+
             Sint16 nx = x >= 0 ? 0 : -x;
             Sint16 ny = y >= 0 ? 0 : -y;
-            SDL_Rect s{ nx, ny, (Uint16)(orig->w - x), (Uint16)(orig->h - y) };
+            SDL_Rect s{ nx, ny, (Uint16)(orig->w + x), (Uint16)(orig->h + y) };
             SDL_BlitSurface(orig, &s, dest, &d);
         }
 
@@ -236,7 +237,7 @@ TILE_SOURCE::TILE_SOURCE(const char* filename)
 
 TILE_SOURCE::~TILE_SOURCE()
 {
-    delete fname;
+    delete[] fname;
     fname = nullptr;
     SDL_FreeSurface(sfc);
 }
