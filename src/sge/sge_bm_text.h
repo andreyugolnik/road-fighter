@@ -50,7 +50,7 @@ extern "C" {
 #endif
 DECLSPEC sge_bmpFont* sge_BF_CreateFont(SDL_Surface *surface, Uint8 flags);
 DECLSPEC sge_bmpFont* sge_BF_OpenFont(char *file, Uint8 flags);
-DECLSPEC void sge_BF_CloseFont(sge_bmpFont *font);
+DECLSPEC void sge_BF_CloseFont(sge_bmpFont*& font);
 DECLSPEC void sge_BF_SetColor(sge_bmpFont *font, Uint8 R, Uint8 G, Uint8 B);
 DECLSPEC void sge_BF_SetAlpha(sge_bmpFont *font, Uint8 alpha);
 DECLSPEC Sint16 sge_BF_GetHeight(sge_bmpFont *font);

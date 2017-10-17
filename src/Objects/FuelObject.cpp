@@ -48,8 +48,6 @@ bool CFuelObject::cycle(unsigned char* /*keyboard*/, unsigned char* /*old_keyboa
     }
 
     y_speed = -ENEMY_SPEED;
-
-    y_speed = -ENEMY_SPEED;
     x_speed = 0;
     if (game->object_collision(16, 0, this, CONSTITUTION_SOLID) != 0)
     {

@@ -68,11 +68,8 @@ void CRoadFighter::gameover_draw(SDL_Surface* screen)
 
     /* Draw text: */
     {
-        SDL_Surface* text_sfc;
-        float f = 1.0;
-
-        text_sfc = SDL_DisplayFormat(gameover_sfc);
-        f = float(gameover_timmer) / gameover_time;
+        SDL_Surface* text_sfc = SDL_DisplayFormat(gameover_sfc);
+        float f = float(gameover_timmer) / gameover_time;
         if (f >= 1.0)
             f = 1.0;
         if (f < 1.0)

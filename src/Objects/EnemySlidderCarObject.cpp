@@ -12,9 +12,7 @@ CEnemySlidderCarObject::~CEnemySlidderCarObject()
 
 bool CEnemySlidderCarObject::cycle(unsigned char* keyboard, unsigned char* old_keyboard)
 {
-    bool retval = true;
-
-    retval = CEnemyCarObject::cycle(keyboard, old_keyboard);
+    bool retval = CEnemyCarObject::cycle(keyboard, old_keyboard);
 
     if (state == 1 && game->min_distance_to_players(y) < 192)
     {
@@ -33,8 +31,12 @@ bool CEnemySlidderCarObject::cycle(unsigned char* keyboard, unsigned char* old_k
             else
                 distance_to_border += 40;
         }
+
         if (distance_to_border < 0)
+        {
             distance_to_border += 80;
+        }
+
         state = 2;
     }
 

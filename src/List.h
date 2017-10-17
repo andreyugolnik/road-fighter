@@ -193,22 +193,22 @@ public:
         return act;
     }
 
-    bool EmptyP()
+    bool EmptyP() const
     {
         return list == 0;
     }
 
-    bool EndP()
+    bool EndP() const
     {
         return act == 0;
     }
 
-    bool LastP()
+    bool LastP() const
     {
         return act == top;
     }
 
-    bool BeginP()
+    bool BeginP() const
     {
         return act == list;
     }
@@ -369,7 +369,7 @@ public:
         return o;
     }
 
-    bool MemberP(T* o)
+    bool MemberP(T* o) const
     {
         LLink<T>* tmp;
         tmp = list;
@@ -395,7 +395,7 @@ public:
         return 0;
     }
 
-    bool MemberRefP(T* o)
+    bool MemberRefP(T* o) const
     {
         LLink<T>* tmp;
         tmp = list;
@@ -408,7 +408,7 @@ public:
         return false;
     }
 
-    int Length()
+    int Length() const
     {
         LLink<T>* tmp;
         int count = 0;
@@ -519,7 +519,7 @@ public:
         return operator[](i);
     }
 
-    bool operator==(List<T>& l)
+    bool operator==(List<T>& l) const
     {
         LLink<T>*tmp1, *tmp2;
 
@@ -535,7 +535,7 @@ public:
         return tmp1 == tmp2;
     }
 
-    int SearchObjRef(T* o)
+    int SearchObjRef(T* o) const
     {
         LLink<T>* tmp;
         int pos = 0;
@@ -551,7 +551,7 @@ public:
         return -1;
     }
 
-    int SearchObj(T* o)
+    int SearchObj(T* o) const
     {
         LLink<T>* tmp;
         int pos = 0;
@@ -567,7 +567,7 @@ public:
         return -1;
     }
 
-    void Sort(bool (*p)(T* o1, T* o2))
+    void Sort(bool (*p)(T* o1, T* o2)) const
     {
         LLink<T>*l1, *l2;
         T* tmp;

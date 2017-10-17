@@ -129,14 +129,14 @@ void sge_screen::update(void)
 	SI i;
 
 	//Draw shapes in list
-	for(i=shapes.begin(); i != shapes.end(); i++){
+	for(i=shapes.begin(); i != shapes.end(); ++i){
 		(*i)->draw();
 		(*i)->UpdateRects(); //Adds rectangles with add_rect() automaticly
 	}
 	shapes.clear();
 	
 	//Draw permanent shapes in list
-	for(i=shapes_p.begin(); i != shapes_p.end(); i++){
+	for(i=shapes_p.begin(); i != shapes_p.end(); ++i){
 		(*i)->draw();
 		(*i)->UpdateRects(); //Adds rectangles with add_rect() automaticly
 	}
@@ -148,7 +148,7 @@ void sge_screen::update(void)
 		SDL_Rect *r=new SDL_Rect[rects.size()];  //ANSI C++
 
 		/* Copy every element in the linked list to the array */
-		for(RI i=rects.begin(); i != rects.end(); i++){
+		for(RI i=rects.begin(); i != rects.end(); ++i){
 			r[j++]=*i;	
 		}
 		
@@ -552,13 +552,13 @@ void sge_ssprite::skip_frame(int skips)
 {
 	if(skips > 0){
 		for(int i=0; i<skips; i++){
-			current_fi++;
+			++current_fi;
 			if(current_fi == fi_stop){
 				if(seq_mode!=play_once)
 					current_fi=fi_start;  //loop
 				else{                   //stop
 					seq_mode=stop;
-					current_fi--;         //current_fi = fi_stop -1
+					--current_fi;         //current_fi = fi_stop -1
 					fi_start=current_fi;
 				}
 			}
@@ -571,11 +571,11 @@ void sge_ssprite::skip_frame(int skips)
 					current_fi=fi_stop;   //loop
 				else{                   //stop
 					seq_mode=stop;
-					current_fi++;         //+1
+					++current_fi;         //+1
 					fi_stop=current_fi;
 				}	
 			}
-			current_fi--;
+			--current_fi;
 		}
 	}
 	else
@@ -611,13 +611,13 @@ void sge_ssprite::set_seq(int start, int stop, playing_mode mode)
 	
 	for(int i=0; i<=stop; i++){
 		if(i<start)
-			fi_start++;
+			++fi_start;
 			
-		fi_stop++;
+		++fi_stop;
 		
 		if(fi_stop == frames.end()){
 			if(fi_start == frames.end())
-				fi_start--;
+				--fi_start;
 			break;
 		}		
 	}
@@ -661,7 +661,7 @@ void sge_ssprite::first_frame(void)
 void sge_ssprite::last_frame(void)
 {
 	current_fi = fi_stop;
-	current_fi--;
+	--current_fi;
 	
 	current_frame = *current_fi;	
 	surface = current_frame->img;

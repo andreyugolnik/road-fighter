@@ -79,8 +79,8 @@ bool CObject::collision(int offsx, int offsy, CObject* o)
 
         if (sge_cmcheck(t1->collision_data, 0, 0, t2->collision_data, tmpx, tmpy))
         {
-            tmpx = sge_get_cx();
-            tmpy = sge_get_cy();
+            // tmpx = sge_get_cx();
+            // tmpy = sge_get_cy();
             return true;
         }
     }

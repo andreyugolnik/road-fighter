@@ -159,14 +159,14 @@ int Resume_playback(int nc, int nrc)
 
 Mix_Chunk* Sound_create_sound(const char* file)
 {
-    const char* ext[] = { "ogg", "wav" };
-    char name[256];
-
     if (sound_enabled)
     {
+        const char* ext[] = { "ogg", "wav" };
         for (auto e : ext)
         {
+            char name[256];
             ::snprintf(name, sizeof(name), "%s.%s", file, e);
+
             auto sound = loadSound(name);
             if (sound != nullptr)
             {
@@ -246,14 +246,14 @@ void Sound_play_ch(Mix_Chunk* s, int ch, int volume)
 
 Mix_Music* Sound_create_stream(const char* file)
 {
-    const char* ext[] = { "ogg", "wav" };
-    char name[256];
-
     if (sound_enabled)
     {
+        const char* ext[] = { "ogg", "wav" };
         for (auto e : ext)
         {
+            char name[256];
             ::snprintf(name, sizeof(name), "%s.%s", file, e);
+
             auto music = loadMusic(name);
             if (music != nullptr)
             {

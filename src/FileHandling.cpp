@@ -7,7 +7,7 @@
 #define STRLEN 4096
 #define GAMENAME "roadfighter"
 
-FILE* f1open(const char* file, const char* m, const enum filetype t)
+FILE* f1open(const char* file, const char* m, filetype t)
 {
     if (t == GAMEDATA)
     {

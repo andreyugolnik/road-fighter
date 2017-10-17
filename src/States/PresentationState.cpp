@@ -3,30 +3,31 @@
 
 const int presentation_fade_time = 25;
 
-int CRoadFighter::presentation_cycle(void)
+int CRoadFighter::presentation_cycle()
 {
-    int i;
-    bool key_pressed;
-
     if (state_timmer == 0)
     {
         presentation_state = 0;
         presentation_timmer = 0;
     }
 
-    if (presentation_state == 0)
+    switch (presentation_state)
+    {
+    case 0:
+    case 2:
         presentation_timmer++;
-    if (presentation_state == 1)
-        presentation_timmer--;
-    if (presentation_state == 2)
-        presentation_timmer++;
-    if (presentation_state == 3)
-        presentation_timmer--;
+        break;
 
-    key_pressed = false;
+    case 1:
+    case 3:
+        presentation_timmer--;
+        break;
+    }
+
+    bool key_pressed = false;
     if (state_timmer >= 5)
     {
-        for (i = 0; i < SDLK_LAST; i++)
+        for (int i = 0; i < SDLK_LAST; i++)
         {
             if (keyboard[i] && !old_keyboard[i])
                 key_pressed = true;

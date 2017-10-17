@@ -395,9 +395,6 @@ bool CPlayerCarObject::cycle(unsigned char* keyboard, unsigned char* old_keyboar
         {
             if ((sound_timmer & 0x07) == 0)
             {
-                float f;
-                unsigned int i, j, k;
-                Sint16 *ip, *ip2;
                 /*
 				// 2 octave range: 0.25 - 1.0
 				f=(3.0F*(float(-y_speed)/MAX_SPEED)+1.0F)/4.0F;
@@ -412,17 +409,17 @@ bool CPlayerCarObject::cycle(unsigned char* keyboard, unsigned char* old_keyboar
 */
 
                 //  3 tones lower, and end 4 above:	0.8408964 - 1.2599210
-                f = 0.8408964F + (1.259921F - 0.8408964F) * (float(-y_speed) / MAX_SPEED);
+                float f = 0.8408964F + (1.259921F - 0.8408964F) * (float(-y_speed) / MAX_SPEED);
                 if (f < 0.8408964F)
                     f = 0.8408964F;
                 if (f > 1.2599210F)
                     f = 1.2599210F;
 
-                ip = (Sint16*)S_carengine_working.abuf;
-                ip2 = (Sint16*)game->S_carengine->abuf;
-                for (i = 0, j = 0; i < game->S_carengine->alen && ((unsigned int)(j * f)) * 4 < game->S_carengine->alen; i += 4, j++)
+                Sint16* ip = (Sint16*)S_carengine_working.abuf;
+                Sint16* ip2 = (Sint16*)game->S_carengine->abuf;
+                for (unsigned int i = 0, j = 0; i < game->S_carengine->alen && ((unsigned int)(j * f)) * 4 < game->S_carengine->alen; i += 4, j++)
                 {
-                    k = (unsigned int)(j * f);
+                    unsigned int k = (unsigned int)(j * f);
                     if (game->focusing_objects.Length() == 1)
                     {
                         ip[j * 2] = ip2[k * 2];         /* L */
@@ -735,7 +732,7 @@ void CPlayerCarObject::draw(int sx, int sy, SDL_Surface* screen)
     }
 }
 
-int CPlayerCarObject::car_tile(int angle)
+int CPlayerCarObject::car_tile(int angle) const
 {
     long nt = ntiles - explosion_tiles;
 

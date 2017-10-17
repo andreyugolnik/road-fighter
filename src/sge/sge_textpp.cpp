@@ -340,7 +340,7 @@ void sge_TextEditor::clear_text(void)
 }
 
 
-void sge_TextEditor::change_text(const string s)
+void sge_TextEditor::change_text(const string& s)
 {
 	clear_text();
 	

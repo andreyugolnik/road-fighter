@@ -26,7 +26,7 @@ public:
     void reach_goal();
 
 protected:
-    int car_tile(int angle); /* in degrees */
+    int car_tile(int angle) const; /* in degrees */
     void tyre_coordinates(int angle, int* x1, int* y1, int* x2, int* y2);
 
     // int state;		0 - Starting

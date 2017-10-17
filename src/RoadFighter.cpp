@@ -262,13 +262,12 @@ void CRoadFighter::scoreboard_draw(int x, int y, SDL_Surface* screen)
     if (r.x + r.w < screen->w)
     {
         SDL_Rect r2;
-        int i;
 
         r2.x = scoreboard_sfc->w - 1;
         r2.y = 0;
         r2.w = 1;
         r2.h = scoreboard_sfc->h;
-        for (i = r.x + r.w; i < screen->w; i++)
+        for (int i = r.x + r.w; i < screen->w; i++)
         {
             r.x = i;
             r.w = 1;
@@ -281,17 +280,16 @@ void CRoadFighter::scoreboard_draw(int x, int y, SDL_Surface* screen)
     {
         List<int> l;
         int* speed;
-        int i, j, tmp, tmp2;
 
         game->get_speeds(&l);
         l.Rewind();
-        j = l.Length() - 1;
+        int j = l.Length() - 1;
         while (l.Iterate(speed))
         {
-            tmp = int(112 * (float(-*(speed)) / MAX_SPEED));
-            tmp2 = (33 - l.Length()) / l.Length();
+            int tmp = int(112 * (float(-*(speed)) / MAX_SPEED));
+            int tmp2 = (33 - l.Length()) / l.Length();
 
-            for (i = 367; i > 367 - tmp; i -= 2)
+            for (int i = 367; i > 367 - tmp; i -= 2)
             {
                 r.x = (x + 28) + (tmp2 + 1) * j;
                 r.y = i;
@@ -308,17 +306,16 @@ void CRoadFighter::scoreboard_draw(int x, int y, SDL_Surface* screen)
     {
         List<int> l;
         int* fuel;
-        int i, j, tmp, tmp2;
 
         game->get_fuels(&l);
         l.Rewind();
-        j = l.Length() - 1;
+        int j = l.Length() - 1;
         while (l.Iterate(fuel))
         {
-            tmp = int(112 * (float(*fuel) / MAX_FUEL));
-            tmp2 = (33 - l.Length()) / l.Length();
+            int tmp = int(112 * (float(*fuel) / MAX_FUEL));
+            int tmp2 = (33 - l.Length()) / l.Length();
 
-            for (i = 367; i > 367 - tmp; i -= 2)
+            for (int i = 367; i > 367 - tmp; i -= 2)
             {
                 r.x = (x + 76) + (tmp2 + 1) * j;
                 r.y = i;
@@ -355,16 +352,15 @@ void CRoadFighter::scoreboard_draw(int x, int y, SDL_Surface* screen)
     {
         List<float> l;
         float* pos;
-        int car_x, car_y, j;
 
         game->get_positions(&l);
         l.Rewind();
 
-        car_x = x + 68 + l.Length() * minicar1_tile->get_dx() / 2 - minicar1_tile->get_dx();
-        j = 0;
+        int car_x = x + 68 + l.Length() * minicar1_tile->get_dx() / 2 - minicar1_tile->get_dx();
+        int j = 0;
         while (l.Iterate(pos))
         {
-            car_y = int(108 + *pos * (121 - minicar1_tile->get_dy()));
+            int car_y = int(108 + *pos * (121 - minicar1_tile->get_dy()));
             if (j == 0)
                 minicar1_tile->draw(car_x, car_y, screen);
             if (j == 1)
@@ -378,16 +374,16 @@ void CRoadFighter::scoreboard_draw(int x, int y, SDL_Surface* screen)
     if (game != nullptr)
     {
         /* High-score: */
-        SDL_Color c;
-        SDL_Surface* sfc;
-        char tmp[80];
         List<int> l;
-        int *itmp, j, score_x;
+        int* itmp;
 
+        char tmp[80];
         sprintf(tmp, "%i", high_score);
+
+        SDL_Color c;
         c.r = c.b = 0;
         c.g = 255;
-        sfc = TTF_RenderText_Blended(font1, tmp, c);
+        SDL_Surface* sfc = TTF_RenderText_Blended(font1, tmp, c);
         r.x = x + 103 - sfc->w;
         r.y = 21;
         r.w = sfc->w;
@@ -398,8 +394,8 @@ void CRoadFighter::scoreboard_draw(int x, int y, SDL_Surface* screen)
         /* Scores: */
         game->get_scores(&l);
         l.Rewind();
-        j = 0;
-        score_x = 103;
+        int j = 0;
+        int score_x = 103;
         while (l.Iterate(itmp))
         {
             if (((state_timmer >> 5) % l.Length()) == j)

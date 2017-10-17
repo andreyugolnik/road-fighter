@@ -306,7 +306,7 @@ Sint16 sge_BF_GetWidth(sge_bmpFont *font)
 //==================================================================================
 // Removes font from memory
 //==================================================================================
-void sge_BF_CloseFont(sge_bmpFont *font)
+void sge_BF_CloseFont(sge_bmpFont*& font)
 {
 	if(font){
 		SDL_FreeSurface(font->FontSurface);

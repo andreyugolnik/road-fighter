@@ -250,18 +250,11 @@ void CRoadFighter::interlevel_draw(SDL_Surface* screen)
 
     case 3: // Appearing text
     case 4: // Disappearing text
-    {
-        SDL_Color c;
-        SDL_Surface* text_sfc;
-        char text[80];
-        int v = 255;
-        float f = 1.0;
-
         if (levelintro_sfc != 0)
         {
-            text_sfc = SDL_DisplayFormat(levelintro_sfc);
+            SDL_Surface* text_sfc = SDL_DisplayFormat(levelintro_sfc);
 
-            f = float(interlevel_timmer) / interlevel_time;
+            float f = float(interlevel_timmer) / interlevel_time;
             if (f >= 1.0)
                 f = 1.0;
 
@@ -276,13 +269,15 @@ void CRoadFighter::interlevel_draw(SDL_Surface* screen)
         }
         else
         {
+            char text[80];
             sprintf(text, "STAGE %.2i", current_level);
 
-            v = (interlevel_timmer * 255) / interlevel_time;
+            int v = (interlevel_timmer * 255) / interlevel_time;
             if (v >= 255)
                 v = 255;
+            SDL_Color c;
             c.r = c.g = c.b = v;
-            text_sfc = TTF_RenderText_Blended(font2big, text, c);
+            SDL_Surface* text_sfc = TTF_RenderText_Blended(font2big, text, c);
             r.x = (desired_scoreboard_x) / 2 - text_sfc->w / 2;
             r.y = (screen->h / 2) - text_sfc->h;
             r.w = text_sfc->w;
@@ -290,8 +285,7 @@ void CRoadFighter::interlevel_draw(SDL_Surface* screen)
             SDL_BlitSurface(text_sfc, 0, screen, &r);
             SDL_FreeSurface(text_sfc);
         } // if
-    }
-    break;
+        break;
     } // switch
 
     /* Draw Scoreboard: */

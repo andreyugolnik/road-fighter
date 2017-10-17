@@ -8,4 +8,4 @@ enum filetype
     USERDATA
 };
 
-FILE* f1open(const char* f, const char* m, const enum filetype t);
+FILE* f1open(const char* f, const char* m, filetype t);

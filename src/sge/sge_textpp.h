@@ -104,7 +104,7 @@ public:
 	
 	//Change the text
 	void clear_text(void);
-	void change_text(const std::string s);
+	void change_text(const std::string& s);
 	//void change_utext(const std::basic_string<Uint16> s);
 	void change_uctext(Uint16 *text);
 	void change_textf(const char *text, ...);             //printf c-style... urk
@@ -113,7 +113,7 @@ public:
 	void max_chars(unsigned int c){mChars=c;}
 	
 	//Returns the number of characters in the current string
-	unsigned int get_chars(void){return chars;}
+	unsigned int get_chars(void) const {return chars;}
 };
 
 
@@ -149,7 +149,7 @@ protected:
 	
 public:
 	//Constructor
-	sge_text(void){tt_font=NULL; bm_font=NULL; text_surface=NULL; use_tt=true; text_surface=NULL; sCursor=false; alpha_level=SDL_ALPHA_OPAQUE;}
+	sge_text(void){tt_font=NULL; bm_font=NULL; alpha_level=SDL_ALPHA_OPAQUE; text_surface=NULL; use_tt=true; sCursor=false;}
 	virtual ~sge_text(void){if(text_surface){SDL_FreeSurface(text_surface);}}
 	
 	//Get a pointer to the text surface or (if copy=true) returns
@@ -164,8 +164,8 @@ public:
 	void set_ttFont(sge_TTFont *font, Uint8 r, Uint8 g, Uint8 b, Uint8 br=0, Uint8 bg=0, Uint8 bb=0);
 #endif
 	
-	bool get_color(SDL_Color *fg){if( tt_font ) {fg->r = color.r; fg->g = color.g; fg->b = color.b; return true;} else return false;}
-	bool get_bg(SDL_Color *bg)   {if( tt_font ) {bg->r = background.r; bg->g = background.g; bg->b = background.b; return true;} else return false;}
+	bool get_color(SDL_Color *fg) const {if( tt_font ) {fg->r = color.r; fg->g = color.g; fg->b = color.b; return true;} else return false;}
+	bool get_bg(SDL_Color *bg) const {if( tt_font ) {bg->r = background.r; bg->g = background.g; bg->b = background.b; return true;} else return false;}
 
 	void set_bmFont(sge_bmpFont *bm_font);
 	
@@ -196,12 +196,12 @@ protected:
 public:
 	sge_TextSurface(SDL_Surface *screen, Sint16 x=0, Sint16 y=0):
 		sge_surface(screen,screen,x,y)
-		{\
+		{
 			surface=NULL;
 			current_pos.w=0; current_pos.h=0;
 		}
 		
-	sge_TextSurface(SDL_Surface *screen, const std::string text, Sint16 x=0, Sint16 y=0):
+	sge_TextSurface(SDL_Surface *screen, const std::string& text, Sint16 x=0, Sint16 y=0):
 		sge_surface(screen,screen,x,y)
 		{
 			change_text(text);
@@ -225,7 +225,7 @@ public:
 			current_pos.w=0; current_pos.h=0;
 		}
 		
-	sge_TextSsprite(SDL_Surface *screen, const std::string text, Sint16 x=0, Sint16 y=0):
+	sge_TextSsprite(SDL_Surface *screen, const std::string& text, Sint16 x=0, Sint16 y=0):
 		sge_ssprite(screen,screen,x,y)
 		{
 			change_text(text);
@@ -249,7 +249,7 @@ public:
 			current_pos.w=0; current_pos.h=0;
 		}
 		
-	sge_TextSprite(SDL_Surface *screen, const std::string text, Sint16 x=0, Sint16 y=0):
+	sge_TextSprite(SDL_Surface *screen, const std::string& text, Sint16 x=0, Sint16 y=0):
 		sge_sprite(screen,screen,x,y)
 		{
 			change_text(text);

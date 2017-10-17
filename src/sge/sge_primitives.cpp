@@ -307,22 +307,17 @@ int clipEncode(Sint16 x, Sint16 y, Sint16 left, Sint16 top, Sint16 right, Sint16
 
 int clipLine(SDL_Surface *dst, Sint16 *x1, Sint16 *y1, Sint16 *x2, Sint16 *y2)
 {
-	int code1, code2;
 	bool draw = false;
-	
-	Sint16 tmp;
-	float m;
 
 	/* Get clipping boundary */
-	Sint16 left, right, top, bottom;
-	left = sge_clip_xmin(dst);
-	right = sge_clip_xmax(dst);
-	top = sge_clip_ymin(dst);
-	bottom = sge_clip_ymax(dst);
+	Sint16 left = sge_clip_xmin(dst);
+	Sint16 right = sge_clip_xmax(dst);
+	Sint16 top = sge_clip_ymin(dst);
+	Sint16 bottom = sge_clip_ymax(dst);
 
 	while (true){
-		code1 = clipEncode(*x1, *y1, left, top, right, bottom);
-		code2 = clipEncode(*x2, *y2, left, top, right, bottom);
+		int code1 = clipEncode(*x1, *y1, left, top, right, bottom);
+		int code2 = clipEncode(*x2, *y2, left, top, right, bottom);
 		
 		if(CLIP_ACCEPT(code1, code2)){
 			draw = true;
@@ -331,7 +326,7 @@ int clipLine(SDL_Surface *dst, Sint16 *x1, Sint16 *y1, Sint16 *x2, Sint16 *y2)
 			break;
 		else{
 			if(CLIP_INSIDE(code1)){
-				tmp = *x2;
+                Sint16 tmp = *x2;
 				*x2 = *x1;
 				*x1 = tmp;
 				tmp = *y2;
@@ -341,11 +336,8 @@ int clipLine(SDL_Surface *dst, Sint16 *x1, Sint16 *y1, Sint16 *x2, Sint16 *y2)
 				code2 = code1;
 				code1 = tmp;
 			}
-			if(*x2 != *x1)
-				m = (*y2 - *y1) / float(*x2 - *x1);
-			else
-				m = 1.0;
-			
+
+            float m = *x2 != *x1 ? ((*y2 - *y1) / float(*x2 - *x1)) : 1.0f;
 			
 			if(code1 & CLIP_LEFT_EDGE){
 				*y1 += Sint16( (left - *x1) * m );

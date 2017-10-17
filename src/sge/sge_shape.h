@@ -284,13 +284,13 @@ public:
 	// sge_ssprite::stop - is returned by get_PlayingMode() if stoped
 	void set_seq(int start, int stop, playing_mode mode=loop);
 	void reset_seq(void);
-	playing_mode get_PlayingMode(void){return seq_mode;}
+	playing_mode get_PlayingMode(void) const {return seq_mode;}
 	
 	//Get cdata for current frame
-	sge_cdata* get_cdata(void){return current_frame->cdata;}
+	sge_cdata* get_cdata(void) const {return current_frame->cdata;}
 	
 	//Get the current frame
-	sge_frame* get_frame(void){return current_frame;}
+	sge_frame* get_frame(void) const {return current_frame;}
 	
 	//Get the frame list
 	//DO NOT ADD OR REMOVE ELEMENTS without using

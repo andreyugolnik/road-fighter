@@ -89,11 +89,10 @@ void _FadedLine(SDL_Surface *dest,Sint16 x1,Sint16 x2,Sint16 y,Uint8 r1,Uint8 g1
 	
 	switch (dest->format->BytesPerPixel) {
 		case 1: { /* Assuming 8-bpp */
-			Uint8 *pixel;
 			Uint8 *row = (Uint8 *)dest->pixels + y*dest->pitch;
 			
 			for (x = x1; x <= x2; x++){
-				pixel = row + x;
+                Uint8* pixel = row + x;
 				
 				*pixel = SDL_MapRGB( dest->format, R>>16, G>>16, B>>16 );
 		
@@ -105,11 +104,10 @@ void _FadedLine(SDL_Surface *dest,Sint16 x1,Sint16 x2,Sint16 y,Uint8 r1,Uint8 g1
 		break;
 
 		case 2: { /* Probably 15-bpp or 16-bpp */
-			Uint16 *pixel;
 			Uint16 *row = (Uint16 *)dest->pixels + y*dest->pitch/2;
 			
 			for (x = x1; x <= x2; x++){
-				pixel = row + x;
+                Uint16* pixel = row + x;
 				
 				*pixel = MapRGB( dest->format, R>>16, G>>16, B>>16 );
 		
@@ -121,7 +119,6 @@ void _FadedLine(SDL_Surface *dest,Sint16 x1,Sint16 x2,Sint16 y,Uint8 r1,Uint8 g1
 		break;
 
 		case 3: { /* Slow 24-bpp mode, usually not used */
-			Uint8 *pixel;
 			Uint8 *row = (Uint8 *)dest->pixels + y*dest->pitch;
 			
 			Uint8 rshift8=dest->format->Rshift/8;
@@ -129,7 +126,7 @@ void _FadedLine(SDL_Surface *dest,Sint16 x1,Sint16 x2,Sint16 y,Uint8 r1,Uint8 g1
 			Uint8 bshift8=dest->format->Bshift/8;
 			
 			for (x = x1; x <= x2; x++){
-				pixel = row + x*3;
+                Uint8* pixel = row + x*3;
 		
 				*(pixel+rshift8) = R>>16;
   				*(pixel+gshift8) = G>>16;
@@ -143,11 +140,10 @@ void _FadedLine(SDL_Surface *dest,Sint16 x1,Sint16 x2,Sint16 y,Uint8 r1,Uint8 g1
 		break;
 
 		case 4: { /* Probably 32-bpp */
-			Uint32 *pixel;
 			Uint32 *row = (Uint32 *)dest->pixels + y*dest->pitch/4;
 			
 			for (x = x1; x <= x2; x++){
-				pixel = row + x;
+                Uint32* pixel = row + x;
 				
 				*pixel = MapRGB( dest->format, R>>16, G>>16, B>>16 );
 		
@@ -220,11 +216,10 @@ void _TexturedLine(SDL_Surface *dest,Sint16 x1,Sint16 x2,Sint16 y,SDL_Surface *s
 	
 		switch (dest->format->BytesPerPixel) {
 			case 1: { /* Assuming 8-bpp */
-				Uint8 *pixel;
 				Uint8 *row = (Uint8 *)dest->pixels + y*dest->pitch;
 			
 				for (x = x1; x <= x2; x++){
-					pixel = row + x;
+                    Uint8* pixel = row + x;
 				
 					*pixel = *((Uint8 *)source->pixels + (srcy>>16)*source->pitch + (srcx>>16));
 		
@@ -235,13 +230,12 @@ void _TexturedLine(SDL_Surface *dest,Sint16 x1,Sint16 x2,Sint16 y,SDL_Surface *s
 			break;
 
 			case 2: { /* Probably 15-bpp or 16-bpp */
-				Uint16 *pixel;
 				Uint16 *row = (Uint16 *)dest->pixels + y*dest->pitch/2;
 			
 				Uint16 pitch = source->pitch/2;
 			
 				for (x = x1; x <= x2; x++){
-					pixel = row + x;
+                    Uint16* pixel = row + x;
 				
 					*pixel = *((Uint16 *)source->pixels + (srcy>>16)*pitch + (srcx>>16));
 		
@@ -252,7 +246,6 @@ void _TexturedLine(SDL_Surface *dest,Sint16 x1,Sint16 x2,Sint16 y,SDL_Surface *s
 			break;
 
 			case 3: { /* Slow 24-bpp mode, usually not used */
-				Uint8 *pixel, *srcpixel;
 				Uint8 *row = (Uint8 *)dest->pixels + y*dest->pitch;
 			
 				Uint8 rshift8=dest->format->Rshift/8;
@@ -260,8 +253,8 @@ void _TexturedLine(SDL_Surface *dest,Sint16 x1,Sint16 x2,Sint16 y,SDL_Surface *s
 				Uint8 bshift8=dest->format->Bshift/8;
 			
 				for (x = x1; x <= x2; x++){
-					pixel = row + x*3;
-					srcpixel = (Uint8 *)source->pixels + (srcy>>16)*source->pitch + (srcx>>16)*3;
+					Uint8* pixel = row + x*3;
+					Uint8* srcpixel = (Uint8 *)source->pixels + (srcy>>16)*source->pitch + (srcx>>16)*3;
 		
 					*(pixel+rshift8) = *(srcpixel+rshift8);
   					*(pixel+gshift8) = *(srcpixel+gshift8);
@@ -274,13 +267,12 @@ void _TexturedLine(SDL_Surface *dest,Sint16 x1,Sint16 x2,Sint16 y,SDL_Surface *s
 			break;
 
 			case 4: { /* Probably 32-bpp */
-				Uint32 *pixel;
 				Uint32 *row = (Uint32 *)dest->pixels + y*dest->pitch/4;
 			
 				Uint16 pitch = source->pitch/4;
 			
 				for (x = x1; x <= x2; x++){
-					pixel = row + x;
+					Uint32* pixel = row + x;
 				
 					*pixel = *((Uint32 *)source->pixels + (srcy>>16)*pitch + (srcx>>16));
 		
@@ -297,11 +289,10 @@ void _TexturedLine(SDL_Surface *dest,Sint16 x1,Sint16 x2,Sint16 y,SDL_Surface *s
 	
 		switch (dest->format->BytesPerPixel) {
 			case 1: { /* Assuming 8-bpp */
-				Uint8 *pixel;
 				Uint8 *row = (Uint8 *)dest->pixels + y*dest->pitch;
 			
 				for (x = x1; x <= x2; x++){
-					pixel = row + x;
+                    Uint8* pixel = row + x;
 				
 					SDL_GetRGB(sge_GetPixel(source, srcx>>16, srcy>>16), source->format, &r, &g, &b);
 					*pixel = SDL_MapRGB( dest->format, r, g, b );
@@ -313,11 +304,10 @@ void _TexturedLine(SDL_Surface *dest,Sint16 x1,Sint16 x2,Sint16 y,SDL_Surface *s
 			break;
 
 			case 2: { /* Probably 15-bpp or 16-bpp */
-				Uint16 *pixel;
 				Uint16 *row = (Uint16 *)dest->pixels + y*dest->pitch/2;
 			
 				for (x = x1; x <= x2; x++){
-					pixel = row + x;
+                    Uint16* pixel = row + x;
 					
 					SDL_GetRGB(sge_GetPixel(source, srcx>>16, srcy>>16), source->format, &r, &g, &b);
 					*pixel = MapRGB( dest->format, r, g, b );
@@ -329,7 +319,6 @@ void _TexturedLine(SDL_Surface *dest,Sint16 x1,Sint16 x2,Sint16 y,SDL_Surface *s
 			break;
 
 			case 3: { /* Slow 24-bpp mode, usually not used */
-				Uint8 *pixel, *srcpixel;
 				Uint8 *row = (Uint8 *)dest->pixels + y*dest->pitch;
 			
 				Uint8 rshift8=dest->format->Rshift/8;
@@ -337,8 +326,8 @@ void _TexturedLine(SDL_Surface *dest,Sint16 x1,Sint16 x2,Sint16 y,SDL_Surface *s
 				Uint8 bshift8=dest->format->Bshift/8;
 			
 				for (x = x1; x <= x2; x++){
-					pixel = row + x*3;
-					srcpixel = (Uint8 *)source->pixels + (srcy>>16)*source->pitch + (srcx>>16)*3;
+					Uint8* pixel = row + x*3;
+					// Uint8* srcpixel = (Uint8 *)source->pixels + (srcy>>16)*source->pitch + (srcx>>16)*3;
 		
 					SDL_GetRGB(sge_GetPixel(source, srcx>>16, srcy>>16), source->format, &r, &g, &b);
 					
@@ -353,11 +342,10 @@ void _TexturedLine(SDL_Surface *dest,Sint16 x1,Sint16 x2,Sint16 y,SDL_Surface *s
 			break;
 
 			case 4: { /* Probably 32-bpp */
-				Uint32 *pixel;
 				Uint32 *row = (Uint32 *)dest->pixels + y*dest->pitch/4;
 			
 				for (x = x1; x <= x2; x++){
-					pixel = row + x;
+                    Uint32* pixel = row + x;
 				
 					SDL_GetRGB(sge_GetPixel(source, srcx>>16, srcy>>16), source->format, &r, &g, &b);
 					*pixel = MapRGB( dest->format, r, g, b );
