@@ -4,6 +4,7 @@
 #include "List.h"
 #include "RoadFighter.h"
 
+#include <algorithm>
 #include <SDL_image.h>
 
 #if defined(EMSCRIPTEN)
@@ -23,15 +24,16 @@ const char* maps[6] = { "maps/level1.mg2",
                         "maps/level5.mg2",
                         "maps/level6.mg2" };
 
-int CRoadFighter::interlevel_cycle(void)
+int CRoadFighter::interlevel_cycle()
 {
     if (state_timmer == 0)
     {
         output_debug_message("CRoadFighter::interlevel_cycle: cycle 0.\n");
 
-        int score1 = 0, score2 = 0;
+        int score1 = 0;
+        int score2 = 0;
 
-        if (levelintro_sfc != 0)
+        if (levelintro_sfc != nullptr)
             SDL_FreeSurface(levelintro_sfc);
 
         Sound_music_volume(MIX_MAX_VOLUME);
@@ -51,25 +53,20 @@ int CRoadFighter::interlevel_cycle(void)
         if (current_level > nlevels)
         {
             current_level = 1;
-            game_mode++;
-            if (game_mode >= 3)
-                game_mode = 3;
+            game_mode = std::min<int>(game_mode + 1, 3);
         }
 
-        if (current_level < 6)
+        if (scoreboard2_sfc != nullptr)
         {
             SDL_FreeSurface(scoreboard2_sfc);
-            if (n_players > 1)
-                scoreboard2_sfc = loadImage("graphics/s_board12p.bmp");
-            else
-                scoreboard2_sfc = loadImage("graphics/s_board11p.bmp");
+        }
+        if (current_level < 6)
+        {
+            scoreboard2_sfc = loadImage(n_players > 1 ? "graphics/s_board12p.bmp" : "graphics/s_board11p.bmp");
         }
         else
         {
-            if (n_players > 1)
-                scoreboard2_sfc = loadImage("graphics/s_board22p.bmp");
-            else
-                scoreboard2_sfc = loadImage("graphics/s_board21p.bmp");
+            scoreboard2_sfc = loadImage(n_players > 1 ? "graphics/s_board22p.bmp" : "graphics/s_board21p.bmp");
         }
 
         desired_scoreboard_x = SCREEN_X - scoreboard_sfc->w;
@@ -78,27 +75,19 @@ int CRoadFighter::interlevel_cycle(void)
         else
             desired_scoreboard_x = SCREEN_X - 144;
 
-        if (current_level == 1)
-            levelintro_sfc = loadImage("graphics/stage1.jpg");
-        if (current_level == 2)
-            levelintro_sfc = loadImage("graphics/stage2.jpg");
-        ;
-        if (current_level == 3)
-            levelintro_sfc = loadImage("graphics/stage3.jpg");
-        ;
-        if (current_level == 4)
-            levelintro_sfc = loadImage("graphics/stage4.jpg");
-        ;
-        if (current_level == 5)
-            levelintro_sfc = loadImage("graphics/stage5.jpg");
-        ;
-        if (current_level == 6)
-            levelintro_sfc = loadImage("graphics/stage6.jpg");
-        ;
+        const char* Stages[] =
+        {
+            "graphics/stage1.jpg",
+            "graphics/stage2.jpg",
+            "graphics/stage3.jpg",
+            "graphics/stage4.jpg",
+            "graphics/stage5.jpg",
+            "graphics/stage6.jpg",
+        };
+        levelintro_sfc = loadImage(Stages[current_level - 1]);
 
         /* Create the game: */
         delete game;
-        game = 0;
         if (n_players == 1)
         {
             game = new CGame(maps[current_level - 1], game_mode, left_key, right_key, fire_key, score1, current_level, game_remake_extras);

@@ -30,7 +30,7 @@ CRoadFighter::CRoadFighter()
     state_timmer = 0;
     current_level = 0;
     high_score = 0;
-    game = 0;
+    game = nullptr;
 
     presentation_state = 0;
     presentation_timmer = 0;
@@ -71,13 +71,12 @@ CRoadFighter::CRoadFighter()
     konami2_sfc = loadImage("graphics/konami2.jpg");
     tittle_sfc = loadImage("graphics/title.jpg");
     arrow_sfc = loadImage("graphics/arrow.bmp");
-    scoreboard_sfc = 0;
     gamemap_sfc = loadImage("graphics/gamemap.bmp");
     minicar1_sfc = loadImage("graphics/minicar1.bmp");
     minicar2_sfc = loadImage("graphics/minicar2.bmp");
     gameover_sfc = loadImage("graphics/gameover.jpg");
     scoreboard_sfc = loadImage("graphics/scoreboard.bmp");
-    scoreboard2_sfc = 0;
+    scoreboard2_sfc = nullptr;
     scoreboardleft_sfc = loadImage("graphics/scoreboard_left.bmp");
 
     {
@@ -248,12 +247,13 @@ void CRoadFighter::draw(SDL_Surface* screen)
 
 void CRoadFighter::scoreboard_draw(int x, int y, SDL_Surface* screen)
 {
-    SDL_Rect r;
-
-    if (scoreboard_sfc == 0)
+    if (scoreboard_sfc == nullptr)
+    {
         return;
+    }
 
     /* Draw Scoreboard: */
+    SDL_Rect r;
     r.x = x;
     r.y = y;
     r.w = scoreboard_sfc->w;
@@ -277,7 +277,7 @@ void CRoadFighter::scoreboard_draw(int x, int y, SDL_Surface* screen)
     }
 
     /* Draw the Speed: */
-    if (game != 0)
+    if (game != nullptr)
     {
         List<int> l;
         int* speed;
@@ -304,7 +304,7 @@ void CRoadFighter::scoreboard_draw(int x, int y, SDL_Surface* screen)
     }
 
     /* Draw the fuel: */
-    if (game != 0)
+    if (game != nullptr)
     {
         List<int> l;
         int* fuel;
@@ -375,7 +375,7 @@ void CRoadFighter::scoreboard_draw(int x, int y, SDL_Surface* screen)
     }
 
     /* Draw the score: */
-    if (game != 0)
+    if (game != nullptr)
     {
         /* High-score: */
         SDL_Color c;
