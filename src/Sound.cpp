@@ -33,7 +33,7 @@ int Sound_initialization(int nc, int nrc)
     const int flags = MIX_INIT_OGG;
     if (Mix_Init(flags) & flags)
     {
-        int audio_rate = MIX_DEFAULT_FREQUENCY;
+        int audio_rate = 44100;
         Uint16 audio_format = MIX_DEFAULT_FORMAT;
         int audio_channels = MIX_DEFAULT_CHANNELS;
         int audio_bufsize = AUDIO_BUFFER;
