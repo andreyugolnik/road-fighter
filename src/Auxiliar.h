@@ -61,3 +61,5 @@ void surface_mask_from_bitmap(SDL_Surface* sfc, SDL_Surface* mask, int x, int y)
 
 SDL_Surface* multiline_text_surface(char* text, int line_dist, TTF_Font* font, SDL_Color c);
 SDL_Surface* multiline_text_surface2(char* text, int line_dist, TTF_Font* font, SDL_Color c1, SDL_Color c2, int line, float glow);
+
+SDL_Surface* renderTextBlended(TTF_Font* font, const char* text, SDL_Color color);

@@ -14,6 +14,7 @@
 
 #include <SDL/SDL.h>
 #include <cstdlib>
+#include <clocale>
 
 #if defined(EMSCRIPTEN)
 #include <emscripten.h>
@@ -281,6 +282,8 @@ int main(int argc, char** argv)
         parseCmdLine(argv[1]);
     }
 #endif
+
+    std::setlocale(0, "");
 
     assets::initialize();
     ::snprintf(application_name, sizeof(application_name), "%s v%d.%d.%d", Game_Title, Game_VerMajor, Game_VerMinor, Game_VerRelease);

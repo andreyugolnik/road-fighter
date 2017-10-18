@@ -86,6 +86,7 @@ private:
     SDL_Surface* gameover_sfc;
     SDL_Surface* credits_sfc;
     SDL_Surface* credits2_sfc;
+    SDL_Surface* wild_spike_sfc;
     CTile* minicar1_tile;
     CTile* minicar2_tile;
 

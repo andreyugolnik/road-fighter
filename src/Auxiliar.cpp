@@ -558,7 +558,7 @@ SDL_Surface* multiline_text_surface(char* text, int line_dist, TTF_Font* font, S
         if (text[i] == '\n')
         {
             text_tmp[j] = 0;
-            tmp = TTF_RenderText_Blended(font, text_tmp, c);
+            tmp = renderTextBlended(font, text_tmp, c);
             if (tmp->w > sizex)
                 sizex = tmp->w;
 
@@ -615,9 +615,9 @@ SDL_Surface* multiline_text_surface2(char* text, int line_dist, TTF_Font* font, 
         {
             text_tmp[j] = 0;
             if (current_line == line)
-                tmp = TTF_RenderText_Blended(font, text_tmp, c2);
+                tmp = renderTextBlended(font, text_tmp, c2);
             else
-                tmp = TTF_RenderText_Blended(font, text_tmp, c1);
+                tmp = renderTextBlended(font, text_tmp, c1);
             if (tmp->w > sizex)
                 sizex = tmp->w;
 
@@ -694,4 +694,13 @@ SDL_Surface* multiline_text_surface2(char* text, int line_dist, TTF_Font* font, 
     }
 
     return tmp;
+}
+
+SDL_Surface* renderTextBlended(TTF_Font* font, const char* text, SDL_Color color)
+{
+#if defined(__EMSCRIPTEN__)
+        return TTF_RenderText_Blended(font, text, color);
+#else
+        return TTF_RenderUTF8_Blended(font, text, color);
+#endif
 }

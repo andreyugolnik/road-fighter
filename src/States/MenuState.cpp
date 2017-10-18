@@ -19,6 +19,8 @@ const int EFFECT_LENGTH = 25;
 const int TEXT_EFFECT_LENGTH = 16;
 
 extern int start_level;
+extern int SCREEN_X;
+extern int SCREEN_Y;
 
 int CRoadFighter::menu_cycle()
 {
@@ -557,7 +559,7 @@ void CRoadFighter::menu_draw(SDL_Surface* screen)
 
         c.r = c.g = c.b = 255;
         c1.r = c1.g = c1.b = 224;
-        menu_sfc = TTF_RenderText_Blended(font2big, menu_tittle_text, c);
+        menu_sfc = renderTextBlended(font2big, menu_tittle_text, c);
         if (menu_nitems > 5)
         {
             options_sfc = multiline_text_surface2(menu_options_text, 0, font2small, c1, c1, -1, 0);
@@ -648,7 +650,7 @@ void CRoadFighter::menu_draw(SDL_Surface* screen)
 
         c.r = c.g = c.b = 255;
         c1.r = c1.g = c1.b = 224;
-        menu_sfc = TTF_RenderText_Blended(font2big, menu_tittle_text, c);
+        menu_sfc = renderTextBlended(font2big, menu_tittle_text, c);
 
         glow = (float(fabs(sinf(state_timmer / 10.0F))) / 2.0F) + 0.125F;
 
@@ -767,4 +769,7 @@ void CRoadFighter::menu_draw(SDL_Surface* screen)
         r2.y = screen->h - credits_sfc->h;
         SDL_BlitSurface(credits2_sfc, &r1, screen, &r2);
     }
+
+    SDL_Rect logo{ (Sint16)(SCREEN_X - 58), (Sint16)(SCREEN_Y - 55), 48, 45 };
+    SDL_BlitSurface(wild_spike_sfc, nullptr, screen, &logo);
 }

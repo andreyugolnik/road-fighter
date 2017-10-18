@@ -78,12 +78,14 @@ CRoadFighter::CRoadFighter()
     scoreboard_sfc = loadImage("graphics/scoreboard.bmp");
     scoreboard2_sfc = nullptr;
     scoreboardleft_sfc = loadImage("graphics/scoreboard_left.bmp");
+    wild_spike_sfc = loadImage("graphics/wild_spike.png");
 
     {
         SDL_Color c;
         const char* text = "        "
                            "Game created for the RETROREMAKES REMAKE COMPETITION"
                            "        "
+                           "IMPROVEMENTS AND PORTING: Andrey A. Ugolnik    "
                            "PROGRAMMING: Santi Ontañón (Brain)    "
                            "GRAPHICS: Miikka Poikela (McBain)    "
                            "MUSIC/SFX: Jorrith Schaap (Jorito)    "
@@ -91,8 +93,8 @@ CRoadFighter::CRoadFighter()
                            "        ";
         c.r = c.g = c.b = 128;
 
-        credits_sfc = TTF_RenderText_Blended(font1, text, c);
-        credits2_sfc = TTF_RenderText_Blended(font1, text, c);
+        credits_sfc = renderTextBlended(font1, text, c);
+        credits2_sfc = renderTextBlended(font1, text, c);
     }
 
     levelintro_sfc = 0;
@@ -131,6 +133,7 @@ CRoadFighter::~CRoadFighter()
 {
     output_debug_message("CRoadFighter: in destructor...\n");
 
+    SDL_FreeSurface(wild_spike_sfc);
     SDL_FreeSurface(retroremakes_sfc);
     SDL_FreeSurface(disclaimer_sfc);
     SDL_FreeSurface(konami1_sfc);
@@ -383,7 +386,7 @@ void CRoadFighter::scoreboard_draw(int x, int y, SDL_Surface* screen)
         SDL_Color c;
         c.r = c.b = 0;
         c.g = 255;
-        SDL_Surface* sfc = TTF_RenderText_Blended(font1, tmp, c);
+        SDL_Surface* sfc = renderTextBlended(font1, tmp, c);
         r.x = x + 103 - sfc->w;
         r.y = 21;
         r.w = sfc->w;
@@ -409,7 +412,7 @@ void CRoadFighter::scoreboard_draw(int x, int y, SDL_Surface* screen)
                     c.r = 255;
                     c.g = 255;
                 }
-                sfc = TTF_RenderText_Blended(font1, tmp, c);
+                sfc = renderTextBlended(font1, tmp, c);
                 r.x = x + score_x - sfc->w;
                 r.y = 64;
                 r.w = sfc->w;

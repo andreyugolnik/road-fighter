@@ -277,7 +277,7 @@ void CRoadFighter::interlevel_draw(SDL_Surface* screen)
                 v = 255;
             SDL_Color c;
             c.r = c.g = c.b = v;
-            SDL_Surface* text_sfc = TTF_RenderText_Blended(font2big, text, c);
+            SDL_Surface* text_sfc = renderTextBlended(font2big, text, c);
             r.x = (desired_scoreboard_x) / 2 - text_sfc->w / 2;
             r.y = (screen->h / 2) - text_sfc->h;
             r.w = text_sfc->w;
