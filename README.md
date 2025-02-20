@@ -1,42 +1,44 @@
-###Road Fighter - remake of MSX game by Brain Games.###
+# Road Fighter
 
-In 2003 the people from [Retro Remakes](http://www.remakes.org/) organized a [remake competition](http://www.retroremakes.com/comp2003/results.php)
-for the first time. The idea was to create a remake from scratch in a short amount of time.
-We decided to participate with a remake of the MSX game [Road Fighter](http://www.generation-msx.nl/msxdb/softwareinfo/684):
-a simple racing game that would be doable before the deadline and still be fun to play (oh the nostalgia!).
+A remake of the classic MSX game by Brain Games.
 
-In the end we met the deadline (barely!) and sent in our entry. When finally the results came in, we
-finished 7th out the 83 entries. Not too bad for a 2 month project :)
+## About the Project
 
-[Road Fighter at Brain Games](http://www.braingames.getput.com/roadf/)
+In 2003 the people from [Retro Remakes](http://www.remakes.org/) organized a [remake competition](http://www.retroremakes.com/comp2003/results.php) for the first time. The idea was to create a remake from scratch in a short amount of time.
 
-##Screenshot##
+We decided to participate with a remake of the MSX game [Road Fighter](http://www.generation-msx.nl/msxdb/softwareinfo/684): a simple racing game that would be doable before the deadline and still be fun to play (oh the nostalgia!).
 
-![Road Fighter](https://bitbucket.org/andreyu/road-fighter/downloads/road-fighter_0.jpg)
-![Road Fighter](https://bitbucket.org/andreyu/road-fighter/downloads/road-fighter_1.jpg)
+In the end we met the deadline (barely!) and sent in our entry. When finally the results came in, we finished 7th out the 83 entries. Not too bad for a 2 month project :)
 
-##The changes I made##
+## Screenshots
 
-* Crashes fixed;
-* Linux, macOS and Web version;
-* Surface operations highly optimized;
-* Simple and stupid Asset system added;
-* Code refactored, source code and resources hierarchy fixed;
-* Move to C++11 standard;
-* Cmake as build system;
+![Road Fighter](https://bitbucket.org/andreyu/road-fighter/downloads/road-fighter_0.jpg) ![Road Fighter](https://bitbucket.org/andreyu/road-fighter/downloads/road-fighter_1.jpg)  
 
-##Dependencies##
+## Enhancements & Updates
 
- Name          | Description / Notes
----------------|---------------------
-`CMake`        | Cross-platform family of tools designed to build, test and package software.
-`SDL`          | SDL v1.2
-`SDL_image`    | 
-`SDL_mixer`    | 
-`SDL_ttf`      | 
+This version of Road Fighter includes several improvements and fixes:
+
+ - ✅ Fixed crash issues.
+ - ✅ Added support for **Linux**, **macOS**, and **Web**.
+ - ✅ Optimized surface operations for better performance.
+ - ✅ Introduced a simple asset management system.
+ - ✅ Refactored and restructured source code and resource hierarchy.
+ - ✅ Upgraded to **C++11** standard.
+ - ✅ Switched to **CMake** as the build system.
+
+This remake aims to bring the nostalgic racing experience to modern platforms while improving performance and maintainability.
+
+Enjoy the ride! 🚗💨
+
+## Dependencies
+
+ - `CMake` - Cross-platform suite of tools for building, testing, and packaging software.
+ - `SDL` v1.2, `SDL_image`, `SDL_mixer`, `SDL_ttf`. 
+
+***
 
 ```
 Copyright © 2017 Andrey A. Ugolnik. All Rights Reserved.
-http://www.ugolnik.info
+https://www.ugolnik.info
 andrey@ugolnik.info
 ```
